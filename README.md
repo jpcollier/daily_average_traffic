@@ -1,53 +1,109 @@
-# Daily Average Traffic Calculator
+# Daily Average Traffic Analysis
 
-This application processes traffic data from CSV files to calculate monthly daily average midweek traffic. It allows users to either upload a CSV file or paste the data directly.
+A Flask web application for analyzing and calculating daily average traffic data, with support for holiday exclusions and directional analysis.
 
 ## Features
 
-- Upload CSV files or paste data directly
+- Upload or paste traffic count data in CSV format
 - Calculate monthly daily average midweek traffic
-- Process data for each hour of the day
-- Clean and modern user interface
+- Option to exclude holiday/restriction periods
+- Support for directional traffic analysis
+- Handles data with or without direction information
+- Validates data coverage and formats
+- Interactive web interface for data input and results display
 
-## Setup
+## Prerequisites
 
-1. Create a virtual environment (recommended):
+- Python 3.9 or higher
+- pip (Python package installer)
+- Virtual environment (recommended)
+
+## Installation
+
+1. Clone the repository:
 ```bash
-python -m venv venv
-source venv/bin/activate  # On Windows: venv\Scripts\activate
+git clone https://github.com/jpcollier/daily_average_traffic.git
+cd daily_average_traffic
 ```
 
-2. Install dependencies:
+2. Create and activate a virtual environment:
+```bash
+# Windows
+python -m venv venv
+venv\Scripts\activate
+
+# Linux/Mac
+python3 -m venv venv
+source venv/bin/activate
+```
+
+3. Install dependencies:
 ```bash
 pip install -r requirements.txt
 ```
 
-3. Run the application:
+## Usage
+
+1. Start the Flask application:
 ```bash
-python app.py
+python -m flask run
 ```
 
-4. Open your browser and navigate to `http://localhost:5000`
+2. Open your web browser and navigate to `http://localhost:5000`
 
-## CSV Format Requirements
+3. Input your traffic data either by:
+   - Uploading a CSV file
+   - Pasting CSV data directly into the text area
 
-The CSV file should contain the following columns:
-- Date/Time (in a format that can be parsed as datetime)
-- Traffic count
+4. Configure your analysis:
+   - Choose whether to aggregate directions
+   - Select whether to exclude holiday periods
+   - Map your CSV columns to the required fields
 
-Example format:
+5. View the results:
+   - Monthly daily averages
+   - Standard errors
+   - Excluded dates (if holiday exclusion is enabled)
+
+## Data Format
+
+The application expects CSV data with the following columns:
+- `datetime`: Date and time of traffic count (format: YYYY-MM-DD HH:MM:SS)
+- `traffic_count`: Number of vehicles counted
+- `direction` (optional): Direction of traffic flow
+- `Coverage %` (optional): Data coverage percentage
+
+Example CSV format:
+```csv
+datetime,traffic_count,direction,Coverage %
+2023-01-01 00:00:00,100,Northbound,100
+2023-01-01 00:15:00,150,Southbound,100
 ```
-datetime,traffic_count
-2024-01-01 00:00:00,100
-2024-01-01 01:00:00,150
-...
-```
 
-## How It Works
+## Holiday/Restriction Periods
 
-The application:
-1. Accepts traffic data through file upload or direct paste
-2. Processes the data to identify midweek days (Monday-Friday)
-3. Calculates hourly averages for each day
-4. Sums up the hourly averages to get the daily average
-5. Presents the results in a clear, readable format 
+The application includes a predefined list of holiday and restriction periods from 2023-2025. These dates are automatically excluded from calculations when the "Exclude Holidays" option is enabled.
+
+## Development
+
+The application is built using:
+- Flask 2.3.3
+- pandas 2.0.3
+- numpy 1.24.3
+- Other dependencies listed in `requirements.txt`
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Contributing
+
+1. Fork the repository
+2. Create your feature branch (`git checkout -b feature/AmazingFeature`)
+3. Commit your changes (`git commit -m 'Add some AmazingFeature'`)
+4. Push to the branch (`git push origin feature/AmazingFeature`)
+5. Open a Pull Request
+
+## Contact
+
+For questions or support, please open an issue in the GitHub repository. 
