@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Average Traffic Calculator</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        html, body {
+            font-family: 'Segoe UI', 'Roboto', 'Arial', 'sans-serif';
+            background: #EFE4D2;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1.5rem;
+        }
+        .main-header {
+            background: transparent;
+            border: none;
+            border-bottom: 2.5px solid #254D70;
+            box-shadow: none;
+            padding: 2.2rem 0 1.2rem 0;
+            margin-bottom: 2.5rem;
+            text-align: center;
+        }
+        .main-header h1 {
+            font-size: 2.3rem;
+            font-weight: 800;
+            color: #254D70;
+            margin-bottom: 0.3rem;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.7rem;
+            letter-spacing: 0.01em;
+        }
+        .main-header i {
+            color: #954C2E;
+            font-size: 2.3rem;
+        }
+        .main-header p {
+            color: #131D4F;
+            font-size: 1.13rem;
+            margin-bottom: 0;
+            margin-top: 0.2rem;
+            font-weight: 500;
+            letter-spacing: 0.01em;
+        }
+        .section-block {
+            background: #fff;
+            border: 1.5px solid #254D70;
+            border-radius: 12px;
+            margin-bottom: 2.5rem;
+            padding: 2.2rem 2.2rem 1.7rem 2.2rem;
+            box-shadow: 0 2px 10px rgba(37,77,112,0.06);
+        }
+        .section-header {
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: #131D4F;
+            border-left: 6px solid #254D70;
+            padding-left: 0.8rem;
+            margin-bottom: 1.5rem;
+            background: none;
+        }
+        .upload-area {
+            border: 2px dashed #254D70;
+            border-radius: 12px;
+            padding: 2.2rem 1rem 1.5rem 1rem;
+            text-align: center;
+            cursor: pointer;
+            background: #fff;
+            transition: all 0.3s;
+            margin-bottom: 1.2rem;
+        }
+        .upload-area:hover, .upload-area.dragover {
+            border-color: #954C2E;
+            background: #f5e8d9;
+        }
+        .upload-area i {
+            color: #954C2E;
+            font-size: 2.7rem;
+            margin-bottom: 0.7rem;
+        }
+        #csvData {
+            margin-top: 1.2rem;
+            margin-bottom: 0.7rem;
+        }
+        #previewArea {
+            margin-bottom: 1.2rem;
+        }
+        .form-check {
+            margin-bottom: 0.7rem;
+        }
+        .form-check-label {
+            font-size: 1.04em;
+        }
+        .form-label {
+            font-weight: 500;
+        }
+        .form-select, .form-control {
+            border-radius: 8px;
+        }
+        #mappingArea {
+            background: #f8faff;
+            border-radius: 8px;
+            padding: 1rem 1rem 0.5rem 1rem;
+            margin-top: 1.2rem;
+            margin-bottom: 1.2rem;
+        }
+        .btn-primary, .btn-success, .btn-outline-primary {
+            border-radius: 7px;
+            font-weight: 500;
+            background-color: #254D70;
+            border-color: #254D70;
+            box-shadow: none;
+        }
+        .btn-primary:hover, .btn-success:hover, .btn-outline-primary:hover {
+            background-color: #131D4F;
+            border-color: #131D4F;
+        }
+        .btn-success {
+            width: 100%;
+            font-size: 1.1em;
+            margin-top: 0.7rem;
+            margin-bottom: 1.2rem;
+            background-color: #254D70;
+            border-color: #254D70;
+        }
+        .btn-success:hover {
+            background-color: #954C2E;
+            border-color: #954C2E;
+        }
+        .btn-link {
+            color: #254D70;
+            font-weight: 500;
+        }
+        .btn-link:hover {
+            color: #954C2E;
+        }
+        .error-message, .success-message {
+            margin-top: 1rem;
+            font-size: 1.05em;
+            border-radius: 7px;
+        }
+        .error-message {
+            color: #fff;
+            background: #954C2E;
+            border: none;
+        }
+        .success-message {
+            color: #fff;
+            background: #254D70;
+            border: none;
+        }
+        .excluded-dates-content {
+            font-size: 0.97em;
+        }
+        .excluded-year h6 {
+            color: #6c757d;
+            margin-bottom: 0.5rem;
+            border-bottom: 1px solid #dee2e6;
+            padding-bottom: 0.25rem;
+        }
+        .excluded-month .month-name {
+            font-weight: 500;
+            color: #495057;
+        }
+        .excluded-dates {
+            display: inline-block;
+            margin-left: 1rem;
+            color: #6c757d;
+        }
+        .date-range {
+            display: inline-block;
+            margin-right: 1rem;
+        }
+        .chart-container {
+            position: relative;
+            height: 420px;
+            width: 100%;
+            margin: 20px 0 10px 0;
+            background: #fff;
+            border: 1.5px solid #254D70;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(37,77,112,0.06);
+            padding: 1.2rem 1.2rem 0.5rem 1.2rem;
+        }
+        #resultsChart {
+            background-color: #fff;
+            border-radius: 8px;
+        }
+        .table-responsive {
+            background: #fff;
+            border: 1.5px solid #254D70;
+            border-radius: 10px;
+            box-shadow: 0 1px 4px rgba(37,77,112,0.03);
+            padding: 1rem 0.5rem;
+        }
+        table.table {
+            margin-bottom: 0;
+        }
+        th {
+            background: #254D70 !important;
+            color: #EFE4D2 !important;
+            font-weight: 600;
+            font-size: 1.07em;
+            border-bottom: 2px solid #131D4F !important;
+        }
+        td {
+            vertical-align: middle !important;
+        }
+        #excludedDatesBox .btn {
+            font-size: 0.98em;
+        }
+        #exportChartBtn {
+            margin-top: 0.5rem;
+            font-size: 1em;
+            padding: 0.4em 1.2em;
+            border-radius: 6px;
+            float: right;
+            background-color: #254D70;
+            border-color: #254D70;
+            color: #EFE4D2;
+            box-shadow: none;
+        }
+        #exportChartBtn:hover {
+            background-color: #954C2E;
+            border-color: #954C2E;
+            color: #fff;
+        }
+        #averageExplanation {
+            background: #eaf6fb;
+            border: 1px solid #b6c6e3;
+            border-radius: 10px;
+            margin-top: 2.2rem;
+            padding: 1.5rem 1.2rem 1.2rem 1.2rem;
+            position: relative;
+        }
+        #averageExplanation h5 {
+            color: #2563eb;
+            font-size: 1.22rem;
+            font-weight: 600;
+            margin-left: 2.2rem;
+        }
+        #averageExplanation .fa-info-circle {
+            position: absolute;
+            left: 1.1rem;
+            top: 1.3rem;
+            color: #2563eb;
+            font-size: 1.3rem;
+        }
+        #averageExplanation ol {
+            margin-left: 1.2em;
+        }
+        .vertical-divider { display: none; }
+        /* Modal color tweaks */
+        .modal-content {
+            background: #fff;
+            border-radius: 12px;
+        }
+        .modal-header {
+            background: #254D70;
+            color: #EFE4D2;
+            border-radius: 12px 12px 0 0;
+        }
+        .modal-title, .modal-header i {
+            color: #EFE4D2 !important;
+        }
+        .modal-body {
+            color: #131D4F;
+        }
+        .modal-body strong {
+            color: #954C2E;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <header class="main-header">
+            <h1><i class="fas fa-chart-bar"></i>Daily Average Traffic Calculator</h1>
+            <p>Calculate monthly daily average midweek traffic from your CSV data</p>
+        </header>
+        <section class="section-block mb-4">
+            <div class="section-header">Upload & Configure</div>
+            <div class="upload-area" id="uploadArea">
+                <i class="fas fa-cloud-upload-alt"></i>
+                <h5 class="mb-2">Drag & Drop your CSV file here</h5>
+                <p class="text-muted mb-2">or</p>
+                <input type="file" id="fileInput" class="d-none" accept=".csv" multiple>
+                <button class="btn btn-primary mb-2" onclick="document.getElementById('fileInput').click()">
+                    Choose File
+                </button>
+            </div>
+            <div class="text-center mb-2">
+                <p class="mb-2">or paste your CSV data below:</p>
+                <textarea id="csvData" class="form-control" rows="5" 
+                          placeholder="Paste your CSV data here (datetime,traffic_count)"></textarea>
+            </div>
+            <div class="mt-3" id="previewArea" style="display:none;">
+                <label class="form-label"><strong>Preview:</strong></label>
+                <pre id="csvPreview" style="background:#f1f3f4;padding:1em;border-radius:8px;max-height:200px;overflow:auto;"></pre>
+            </div>
+            <div class="form-check mt-3 mb-2">
+                <input class="form-check-input" type="checkbox" value="1" id="aggregateDirections" checked>
+                <label class="form-check-label" for="aggregateDirections">
+                    Aggregate all directions
+                </label>
+            </div>
+            <div class="form-check mb-2">
+                <input class="form-check-input" type="checkbox" value="1" id="excludeHolidays" checked>
+                <label class="form-check-label" for="excludeHolidays">
+                    Exclude holidays/restriction dates
+                </label>
+            </div>
+            <div class="mt-3" id="mappingArea" style="display:none;">
+                <label class="form-label"><strong>Map Columns:</strong></label>
+                <div class="row g-2">
+                    <div class="col-md-4">
+                        <label for="datetimeCol" class="form-label">Datetime column</label>
+                        <select id="datetimeCol" class="form-select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="countCol" class="form-label">Traffic count column</label>
+                        <select id="countCol" class="form-select"></select>
+                    </div>
+                    <div class="col-md-4">
+                        <label for="directionCol" class="form-label">Direction column (optional)</label>
+                        <select id="directionCol" class="form-select">
+                            <option value="">(None)</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-success" onclick="processData()">
+                <i class="fas fa-play me-1"></i> Process Data
+            </button>
+            <div class="error-message alert" style="display:none;"></div>
+            <div class="success-message alert" style="display:none;"></div>
+        </section>
+        <section class="section-block" id="resultsSection" style="display:none;">
+            <div class="section-header">Results & Visualization</div>
+            <div class="table-responsive">
+                <table class="table table-striped">
+                    <thead id="resultsTableHead">
+                        <tr>
+                            <th>Month</th>
+                            <th>Daily Average Traffic</th>
+                            <th>Margin of Error +/-</th>
+                            <th>YoY Change (%)</th>
+                        </tr>
+                    </thead>
+                    <tbody id="resultsBody"></tbody>
+                </table>
+            </div>
+            <div class="mt-4">
+                <div class="chart-container">
+                    <canvas id="resultsChart"></canvas>
+                </div>
+                <button id="exportChartBtn" class="btn btn-outline-primary btn-sm" type="button">
+                    <i class="fas fa-download me-1"></i> Export Chart as Image
+                </button>
+            </div>
+            <div class="mt-4" id="excludedDatesBox" style="display:none;">
+                <button class="btn btn-outline-secondary btn-sm mb-2" type="button" data-bs-toggle="collapse" data-bs-target="#excludedDatesList" aria-expanded="false" aria-controls="excludedDatesList">
+                    <i class="fas fa-calendar-times me-1"></i> Show/Hide Excluded Dates
+                </button>
+                <div class="collapse" id="excludedDatesList">
+                    <div class="card card-body">
+                        <div id="excludedDatesContent" class="excluded-dates-content"></div>
+                    </div>
+                </div>
+            </div>
+            <button class="btn btn-link p-0 mt-3" data-bs-toggle="modal" data-bs-target="#explanationModal" style="font-size:1.08em; color:#2563eb; text-decoration:underline;">
+                <i class="fas fa-info-circle me-1"></i>How is Daily Average Traffic Calculated?
+            </button>
+            <!-- Modal -->
+            <div class="modal fade" id="explanationModal" tabindex="-1" aria-labelledby="explanationModalLabel" aria-hidden="true">
+              <div class="modal-dialog modal-lg modal-dialog-centered">
+                <div class="modal-content">
+                  <div class="modal-header">
+                    <h5 class="modal-title" id="explanationModalLabel"><i class="fas fa-info-circle me-2"></i>How is the Daily Average Traffic calculated?</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                  </div>
+                  <div class="modal-body">
+                    <p class="mb-2">The calculation follows these steps:</p>
+                    <ol class="mb-2">
+                        <li>Data is filtered to include only <strong>Tuesday, Wednesday, and Thursday</strong> (midweek days)</li>
+                        <li>If the "Coverage %" column exists, only records with 100% coverage are included</li>
+                        <li>If "Exclude holidays/restriction dates" is checked, dates within holiday/restriction periods are excluded</li>
+                        <li>If direction data is present and "Aggregate all directions" is checked, traffic counts are summed across all directions</li>
+                        <li>For each month (and direction, if not aggregating):
+                            <ul>
+                                <li>Data is grouped by hour (0-23)</li>
+                                <li>For each hour, the mean traffic count is calculated</li>
+                                <li>The daily average is the sum of these hourly means</li>
+                                <li>The standard error (SE) is calculated as: √(sum of (variance/count) for each hour)</li>
+                            </ul>
+                        </li>
+                    </ol>
+                    <p class="mb-0"><small class="text-muted">Note: Multiple records for the same hour are averaged before summing. Hours that are not present in the data are not included in the calculation.</small></p>
+                  </div>
+                </div>
+              </div>
+            </div>
+        </section>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+    <script>
+        // Get all DOM elements at the start
+        const uploadArea = document.getElementById('uploadArea');
+        const fileInput = document.getElementById('fileInput');
+        const csvData = document.getElementById('csvData');
+        const loading = document.querySelector('.loading');
+        const errorMessage = document.querySelector('.error-message');
+        const successMessage = document.querySelector('.success-message');
+        const resultsBody = document.getElementById('resultsBody');
+
+        // Verify all elements are found
+        if (!uploadArea || !fileInput || !csvData || !loading || !errorMessage || !successMessage || !resultsBody) {
+            console.error('Some required elements were not found:', {
+                uploadArea: !!uploadArea,
+                fileInput: !!fileInput,
+                csvData: !!csvData,
+                loading: !!loading,
+                errorMessage: !!errorMessage,
+                successMessage: !!successMessage,
+                resultsBody: !!resultsBody
+            });
+        }
+
+        // Drag and drop handlers
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        ['dragenter', 'dragover'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, highlight, false);
+        });
+
+        ['dragleave', 'drop'].forEach(eventName => {
+            uploadArea.addEventListener(eventName, unhighlight, false);
+        });
+
+        function highlight(e) {
+            uploadArea.classList.add('dragover');
+        }
+
+        function unhighlight(e) {
+            uploadArea.classList.remove('dragover');
+        }
+
+        uploadArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+            fileInput.files = files;
+        }
+
+        fileInput.addEventListener('change', function() {
+            if (this.files.length > 0) {
+                csvData.value = '';
+                previewCSVFiles(this.files);
+            }
+        });
+
+        csvData.addEventListener('input', function() {
+            if (this.value.trim() !== '') {
+                fileInput.value = '';
+                previewCSVText(this.value.trim());
+            } else {
+                clearPreview();
+            }
+        });
+
+        function previewCSVFiles(files) {
+            if (!files || files.length === 0) { clearPreview(); clearMapping(); return; }
+            const readers = [];
+            let loaded = 0;
+            let allTexts = [];
+            for (let i = 0; i < files.length; i++) {
+                const reader = new FileReader();
+                readers.push(reader);
+                reader.onload = function(e) {
+                    allTexts[i] = e.target.result;
+                    loaded++;
+                    if (loaded === files.length) {
+                        // Concatenate CSVs, removing duplicate headers
+                        let combined = '';
+                        for (let j = 0; j < allTexts.length; j++) {
+                            let lines = allTexts[j].split(/\r?\n/);
+                            if (j > 0) lines = lines.slice(1); // Remove header from all but first
+                            combined += (j === 0 ? '' : '\n') + lines.join('\n');
+                        }
+                        previewCSVText(combined);
+                        setupMapping(combined);
+                    }
+                };
+                reader.readAsText(files[i]);
+            }
+        }
+
+        function previewCSVText(text) {
+            if (!text) { clearPreview(); clearMapping(); return; }
+            const lines = text.split(/\r?\n/).slice(0, 10); // Show first 10 lines
+            document.getElementById('csvPreview').textContent = lines.join('\n');
+            document.getElementById('previewArea').style.display = 'block';
+            setupMapping(text);
+        }
+
+        function clearPreview() {
+            document.getElementById('csvPreview').textContent = '';
+            document.getElementById('previewArea').style.display = 'none';
+        }
+
+        function setupMapping(text) {
+            const mappingArea = document.getElementById('mappingArea');
+            if (!text) { clearMapping(); return; }
+            const firstLine = text.split(/\r?\n/)[0];
+            if (!firstLine) { clearMapping(); return; }
+            const headers = firstLine.split(',').map(h => h.trim());
+            // Populate dropdowns
+            const datetimeCol = document.getElementById('datetimeCol');
+            const countCol = document.getElementById('countCol');
+            const directionCol = document.getElementById('directionCol');
+            if (!datetimeCol || !countCol || !directionCol) return;
+            datetimeCol.innerHTML = '';
+            countCol.innerHTML = '';
+            directionCol.innerHTML = '<option value="">(None)</option>';
+            headers.forEach(h => {
+                const opt1 = document.createElement('option');
+                opt1.value = h; opt1.textContent = h;
+                datetimeCol.appendChild(opt1.cloneNode(true));
+                countCol.appendChild(opt1.cloneNode(true));
+                directionCol.appendChild(opt1.cloneNode(true));
+            });
+            // Try to auto-select likely columns
+            autoSelectColumn(datetimeCol, ['datetime', 'date', 'start time']);
+            autoSelectColumn(countCol, ['traffic_count', 'count']);
+            autoSelectColumn(directionCol, ['direction']);
+            mappingArea.style.display = 'block';
+        }
+
+        function clearMapping() {
+            document.getElementById('mappingArea').style.display = 'none';
+        }
+
+        function autoSelectColumn(selectElem, keywords) {
+            const options = Array.from(selectElem.options);
+            for (const kw of keywords) {
+                const found = options.find(opt => opt.value.toLowerCase().includes(kw));
+                if (found) { selectElem.value = found.value; return; }
+            }
+            selectElem.selectedIndex = 0;
+        }
+
+        let chartInstance = null;
+        async function processData() {
+            if (!resultsBody) {
+                console.error('Results elements not found');
+                showError('Application error: Results display not available');
+                return;
+            }
+
+            const formData = new FormData();
+            const files = fileInput.files;
+            const aggregateDirections = document.getElementById('aggregateDirections').checked;
+            const excludeHolidays = document.getElementById('excludeHolidays').checked;
+            formData.append('aggregate_directions', aggregateDirections ? '1' : '0');
+            formData.append('exclude_holidays', excludeHolidays ? '1' : '0');
+            // Add column mapping
+            formData.append('datetime_col', document.getElementById('datetimeCol').value);
+            formData.append('count_col', document.getElementById('countCol').value);
+            formData.append('direction_col', document.getElementById('directionCol').value);
+
+            if (files && files.length > 0) {
+                // Read and concatenate all files, then send as 'data'
+                let allTexts = [];
+                let loaded = 0;
+                for (let i = 0; i < files.length; i++) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        allTexts[i] = e.target.result;
+                        loaded++;
+                        if (loaded === files.length) {
+                            // Concatenate CSVs, removing duplicate headers
+                            let combined = '';
+                            for (let j = 0; j < allTexts.length; j++) {
+                                let lines = allTexts[j].split(/\r?\n/);
+                                if (j > 0) lines = lines.slice(1); // Remove header from all but first
+                                combined += (j === 0 ? '' : '\n') + lines.join('\n');
+                            }
+                            formData.append('data', combined);
+                            sendRequest(formData, aggregateDirections);
+                        }
+                    };
+                    reader.readAsText(files[i]);
+                }
+                return; // Don't continue, will call sendRequest after reading
+            } else if (csvData.value.trim()) {
+                formData.append('data', csvData.value.trim());
+            } else {
+                showError('Please either upload a file or paste CSV data');
+                return;
+            }
+
+            // Reset UI
+            hideMessages();
+            showLoading();
+
+            await sendRequest(formData, aggregateDirections);
+        }
+
+        async function sendRequest(formData, aggregateDirections) {
+            try {
+                console.log('Sending request to server...');
+                const response = await fetch('/process-data', {
+                    method: 'POST',
+                    body: formData
+                });
+
+                console.log('Response status:', response.status);
+                const data = await response.json();
+                console.log('Received data:', data);
+
+                if (response.ok) {
+                    if (data.results && Array.isArray(data.results)) {
+                        displayResults(data.results, aggregateDirections);
+                        showSuccess('Data processed successfully!');
+                        displayExcludedDates(data.excluded_dates);
+                    } else {
+                        console.error('Invalid results format:', data);
+                        showError('Invalid response format from server');
+                    }
+                } else {
+                    console.error('Server error:', data.error);
+                    showError(data.error || 'An error occurred while processing the data');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                showError('An error occurred while processing the data');
+            } finally {
+                hideLoading();
+            }
+        }
+
+        function displayResults(results, aggregateDirections) {
+            console.log('Displaying results:', results);
+            if (!resultsBody) {
+                console.error('Results elements not found');
+                showError('Application error: Results display not available');
+                return;
+            }
+            resultsBody.innerHTML = '';
+            if (!results || !Array.isArray(results) || results.length === 0) {
+                console.error('No results to display');
+                showError('No results to display');
+                return;
+            }
+            // Update table header
+            const tableHead = document.getElementById('resultsTableHead');
+            if (aggregateDirections) {
+                tableHead.innerHTML = `<tr><th>Month</th><th>Daily Average Traffic</th><th>Margin of Error +/-</th><th>YoY Change (%)</th></tr>`;
+            } else {
+                tableHead.innerHTML = `<tr><th>Month</th><th>Direction</th><th>Daily Average Traffic</th><th>Margin of Error +/-</th><th>YoY Change (%)</th></tr>`;
+            }
+            // Build a lookup for YoY calculation
+            const monthLookup = {};
+            results.forEach(r => {
+                // period is in the format 'YYYY-MM' or similar
+                if (r.period) monthLookup[r.period] = r.daily_average;
+            });
+
+            results.forEach(result => {
+                const row = document.createElement('tr');
+                const dailyAvg = typeof result.daily_average === 'number' 
+                    ? Math.round(result.daily_average).toLocaleString() : 'N/A';
+                const margin = result.se !== undefined ? Math.round(result.se).toLocaleString() : 'N/A';
+                // Calculate YoY change
+                let yoy = '—';
+                if (result.period) {
+                    // period is like '2024-01', get previous year
+                    const prevYear = result.period.replace(/^(\d{4})/, (y) => (parseInt(y)-1).toString());
+                    if (monthLookup[prevYear] !== undefined && monthLookup[prevYear] !== 0) {
+                        const change = ((result.daily_average - monthLookup[prevYear]) / Math.abs(monthLookup[prevYear])) * 100;
+                        yoy = (change > 0 ? '+' : '') + Math.round(change) + '%';
+                    }
+                }
+                if (aggregateDirections) {
+                    row.innerHTML = `
+                        <td>${result.month || 'Unknown'}</td>
+                        <td>${dailyAvg}</td>
+                        <td>${margin}</td>
+                        <td>${yoy}</td>
+                    `;
+                } else {
+                    row.innerHTML = `
+                        <td>${result.month || 'Unknown'}</td>
+                        <td>${result.direction || 'Unknown'}</td>
+                        <td>${dailyAvg}</td>
+                        <td>${margin}</td>
+                        <td>${yoy}</td>
+                    `;
+                }
+                resultsBody.appendChild(row);
+            });
+            plotResultsChart(results, aggregateDirections);
+            // Show the results section
+            const resultsSection = document.getElementById('resultsSection');
+            if (resultsSection) resultsSection.style.display = 'block';
+        }
+
+        function plotResultsChart(results, aggregateDirections) {
+            const ctx = document.getElementById('resultsChart').getContext('2d');
+            if (chartInstance) {
+                chartInstance.destroy();
+            }
+            if (!results || results.length === 0) return;
+
+            // Color scheme
+            const primaryColor = '#254D70';
+            const secondaryColor = '#954C2E';
+            const axisColor = '#131D4F';
+            const gridColor = 'rgba(37,77,112,0.08)';
+            const bgColor = '#fff';
+
+            // Common chart options
+            const commonOptions = {
+                responsive: true,
+                maintainAspectRatio: false,
+                plugins: {
+                    legend: {
+                        position: 'top',
+                        labels: {
+                            padding: 20,
+                            usePointStyle: true,
+                            pointStyle: 'circle',
+                            color: axisColor,
+                            font: { size: 13, weight: 'bold' }
+                        }
+                    },
+                    tooltip: {
+                        backgroundColor: primaryColor,
+                        titleColor: '#fff',
+                        bodyColor: '#fff',
+                        borderColor: secondaryColor,
+                        borderWidth: 1,
+                        padding: 12,
+                        titleFont: {
+                            size: 14,
+                            weight: 'bold'
+                        },
+                        bodyFont: {
+                            size: 13
+                        },
+                        callbacks: {
+                            label: function(context) {
+                                let label = context.dataset.label || '';
+                                if (label) {
+                                    label += ': ';
+                                }
+                                if (context.parsed.y !== null) {
+                                    label += new Intl.NumberFormat().format(context.parsed.y);
+                                }
+                                return label;
+                            }
+                        }
+                    }
+                },
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        grid: {
+                            color: gridColor,
+                            drawBorder: false
+                        },
+                        ticks: {
+                            color: axisColor,
+                            callback: function(value) {
+                                return new Intl.NumberFormat().format(value);
+                            },
+                            padding: 10,
+                            font: {
+                                size: 12
+                            }
+                        },
+                        title: {
+                            display: true,
+                            text: 'Daily Average Traffic',
+                            color: axisColor,
+                            padding: {top: 10, bottom: 10},
+                            font: {
+                                size: 13,
+                                weight: 'bold'
+                            }
+                        }
+                    },
+                    x: {
+                        grid: {
+                            display: false
+                        },
+                        ticks: {
+                            color: axisColor,
+                            padding: 10,
+                            font: {
+                                size: 12
+                            }
+                        }
+                    }
+                },
+                layout: {
+                    padding: {
+                        top: 20,
+                        right: 20,
+                        bottom: 20,
+                        left: 20
+                    }
+                }
+            };
+
+            if (aggregateDirections) {
+                // Single bar chart
+                const labels = results.map(r => r.month);
+                const data = results.map(r => r.daily_average);
+                
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Daily Average Traffic',
+                            data: data,
+                            backgroundColor: primaryColor,
+                            borderColor: primaryColor,
+                            borderWidth: 1,
+                            borderRadius: 4,
+                            barPercentage: 0.7,
+                            categoryPercentage: 0.8
+                        }]
+                    },
+                    options: {
+                        ...commonOptions,
+                        plugins: {
+                            ...commonOptions.plugins,
+                            legend: {
+                                display: false
+                            },
+                            title: {
+                                display: true,
+                                text: 'Monthly Daily Average Traffic',
+                                color: axisColor,
+                                padding: {top: 10, bottom: 4},
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Midweek days only (Tuesday, Wednesday, Thursday)',
+                                color: secondaryColor,
+                                padding: {top: 0, bottom: 12},
+                                font: {
+                                    size: 13,
+                                    style: 'italic',
+                                    weight: 'normal',
+                                    family: 'inherit'
+                                }
+                            }
+                        }
+                    }
+                });
+            } else {
+                // Grouped bar chart
+                const monthsRaw = [...new Set(results.map(r => r.month))];
+                const months = monthsRaw;
+                const directions = [...new Set(results.map(r => r.direction))];
+                
+                // Use primary and secondary color for up to 2 directions, alternate if more
+                const baseColors = [primaryColor, secondaryColor];
+                const datasets = directions.map((dir, i) => {
+                    const color = baseColors[i % baseColors.length];
+                    return {
+                        label: dir,
+                        data: monthsRaw.map(m => {
+                            const found = results.find(r => r.month === m && r.direction === dir);
+                            return found ? found.daily_average : 0;
+                        }),
+                        backgroundColor: color,
+                        borderColor: color,
+                        borderWidth: 1,
+                        borderRadius: 4,
+                        barPercentage: 0.8,
+                        categoryPercentage: 0.9
+                    };
+                });
+
+                chartInstance = new Chart(ctx, {
+                    type: 'bar',
+                    data: {
+                        labels: months,
+                        datasets: datasets
+                    },
+                    options: {
+                        ...commonOptions,
+                        plugins: {
+                            ...commonOptions.plugins,
+                            title: {
+                                display: true,
+                                text: 'Monthly Daily Average Traffic by Direction',
+                                color: axisColor,
+                                padding: {top: 10, bottom: 4},
+                                font: {
+                                    size: 16,
+                                    weight: 'bold'
+                                }
+                            },
+                            subtitle: {
+                                display: true,
+                                text: 'Midweek days only (Tuesday, Wednesday, Thursday)',
+                                color: secondaryColor,
+                                padding: {top: 0, bottom: 12},
+                                font: {
+                                    size: 13,
+                                    style: 'italic',
+                                    weight: 'normal',
+                                    family: 'inherit'
+                                }
+                            }
+                        }
+                    }
+                });
+            }
+        }
+
+        function showLoading() {
+            if (loading) {
+                loading.style.display = 'block';
+                console.log('Loading indicator shown');
+            }
+        }
+
+        function hideLoading() {
+            if (loading) {
+                loading.style.display = 'none';
+                console.log('Loading indicator hidden');
+            }
+        }
+
+        function showError(message) {
+            console.error('Error:', message);
+            if (errorMessage) {
+                errorMessage.textContent = message;
+                errorMessage.style.display = 'block';
+            }
+            if (successMessage) {
+                successMessage.style.display = 'none';
+            }
+        }
+
+        function showSuccess(message) {
+            console.log('Success:', message);
+            if (successMessage) {
+                successMessage.textContent = message;
+                successMessage.style.display = 'block';
+            }
+            if (errorMessage) {
+                errorMessage.style.display = 'none';
+            }
+        }
+
+        function hideMessages() {
+            if (errorMessage) errorMessage.style.display = 'none';
+            if (successMessage) successMessage.style.display = 'none';
+            console.log('Messages hidden');
+        }
+
+        function displayExcludedDates(dates) {
+            const box = document.getElementById('excludedDatesBox');
+            const content = document.getElementById('excludedDatesContent');
+            
+            if (dates && Array.isArray(dates) && dates.length > 0) {
+                box.style.display = 'block';
+                
+                // Group dates by year and month
+                const groupedDates = dates.reduce((acc, dateStr) => {
+                    const date = new Date(dateStr);
+                    const year = date.getFullYear();
+                    const month = date.getMonth();
+                    
+                    if (!acc[year]) acc[year] = {};
+                    if (!acc[year][month]) acc[year][month] = [];
+                    acc[year][month].push(date);
+                    return acc;
+                }, {});
+                
+                // Sort years and months
+                const years = Object.keys(groupedDates).sort((a, b) => b - a);
+                
+                // Generate HTML
+                let html = '';
+                years.forEach(year => {
+                    html += `<div class="excluded-year">
+                        <h6>${year}</h6>`;
+                    
+                    const months = Object.keys(groupedDates[year]).sort((a, b) => b - a);
+                    months.forEach(month => {
+                        const monthDates = groupedDates[year][month].sort((a, b) => a - b);
+                        const monthName = monthDates[0].toLocaleString('default', { month: 'long' });
+                        
+                        // Find continuous date ranges
+                        const ranges = [];
+                        let start = monthDates[0];
+                        let prev = monthDates[0];
+                        
+                        for (let i = 1; i <= monthDates.length; i++) {
+                            const curr = monthDates[i];
+                            if (!curr || curr.getTime() - prev.getTime() > 86400000) { // 24 hours in ms
+                                ranges.push({
+                                    start: start,
+                                    end: prev
+                                });
+                                start = curr;
+                            }
+                            prev = curr;
+                        }
+                        
+                        html += `<div class="excluded-month">
+                            <span class="month-name">${monthName}:</span>
+                            <span class="excluded-dates">`;
+                        
+                        ranges.forEach((range, i) => {
+                            const startStr = range.start.getDate();
+                            const endStr = range.end.getDate();
+                            html += `<span class="date-range">${startStr === endStr ? 
+                                startStr : `${startStr}–${endStr}`}</span>`;
+                        });
+                        
+                        html += `</span></div>`;
+                    });
+                    
+                    html += `</div>`;
+                });
+                
+                content.innerHTML = html;
+            } else {
+                box.style.display = 'none';
+                content.innerHTML = '';
+            }
+        }
+
+        // Export chart as image
+        document.addEventListener('DOMContentLoaded', function() {
+            const exportBtn = document.getElementById('exportChartBtn');
+            if (exportBtn) {
+                exportBtn.addEventListener('click', function() {
+                    if (chartInstance) {
+                        const url = chartInstance.toBase64Image();
+                        const link = document.createElement('a');
+                        link.href = url;
+                        link.download = 'traffic_chart.png';
+                        document.body.appendChild(link);
+                        link.click();
+                        document.body.removeChild(link);
+                    }
+                });
+            }
+        });
+    </script>
+</body>
+</html> 
