@@ -1,0 +1,325 @@
+/* style_duckdb.css - extracted from index_duckdb.html */
+
+html, body {
+    font-family: 'Segoe UI', 'Roboto', 'Arial', 'sans-serif';
+    background: #EFE4D2;
+    min-height: 100vh;
+}
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 0 1.5rem;
+}
+.main-header {
+    background: transparent;
+    border: none;
+    border-bottom: 2.5px solid #254D70;
+    box-shadow: none;
+    padding: 2.2rem 0 1.2rem 0;
+    margin-bottom: 2.5rem;
+    text-align: center;
+}
+.main-header h1 {
+    font-size: 2.3rem;
+    font-weight: 800;
+    color: #254D70;
+    margin-bottom: 0.3rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.7rem;
+    letter-spacing: 0.01em;
+}
+.main-header i {
+    color: #954C2E;
+    font-size: 2.3rem;
+}
+.main-header p {
+    color: #131D4F;
+    font-size: 1.13rem;
+    margin-bottom: 0;
+    margin-top: 0.2rem;
+    font-weight: 500;
+    letter-spacing: 0.01em;
+}
+.duckdb-badge {
+    background: linear-gradient(45deg, #FFC107, #FF8F00);
+    color: #000;
+    padding: 0.3rem 0.8rem;
+    border-radius: 15px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-left: 1rem;
+    box-shadow: 0 2px 4px rgba(255,193,7,0.3);
+}
+.section-block {
+    background: #fff;
+    border: 1.5px solid #254D70;
+    border-radius: 12px;
+    margin-bottom: 2.5rem;
+    padding: 2.2rem 2.2rem 1.7rem 2.2rem;
+    box-shadow: 0 2px 10px rgba(37,77,112,0.06);
+}
+.section-header {
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: #131D4F;
+    border-left: 6px solid #254D70;
+    padding-left: 0.8rem;
+    margin-bottom: 1.5rem;
+    background: none;
+}
+.upload-area {
+    border: 2px dashed #254D70;
+    border-radius: 12px;
+    padding: 2.2rem 1rem 1.5rem 1rem;
+    text-align: center;
+    cursor: pointer;
+    background: #fff;
+    transition: all 0.3s;
+    margin-bottom: 1.2rem;
+}
+.upload-area:hover, .upload-area.dragover {
+    border-color: #954C2E;
+    background: #f5e8d9;
+}
+.upload-area i {
+    color: #954C2E;
+    font-size: 2.7rem;
+    margin-bottom: 0.7rem;
+}
+#csvData {
+    margin-top: 1.2rem;
+    margin-bottom: 0.7rem;
+}
+#previewArea {
+    margin-bottom: 1.2rem;
+}
+.form-check {
+    margin-bottom: 0.7rem;
+}
+.form-check-label {
+    font-size: 1.04em;
+}
+.form-label {
+    font-weight: 500;
+}
+.form-select, .form-control {
+    border-radius: 8px;
+}
+#mappingArea {
+    background: #f8faff;
+    border-radius: 8px;
+    padding: 1rem 1rem 0.5rem 1rem;
+    margin-top: 1.2rem;
+    margin-bottom: 1.2rem;
+}
+.btn-primary, .btn-success, .btn-outline-primary {
+    border-radius: 7px;
+    font-weight: 500;
+    background-color: #254D70;
+    border-color: #254D70;
+    box-shadow: none;
+}
+.btn-primary:hover, .btn-success:hover, .btn-outline-primary:hover {
+    background-color: #131D4F;
+    border-color: #131D4F;
+}
+.btn-success {
+    width: 100%;
+    font-size: 1.1em;
+    margin-top: 0.7rem;
+    margin-bottom: 1.2rem;
+    background-color: #254D70;
+    border-color: #254D70;
+}
+.btn-success:hover {
+    background-color: #954C2E;
+    border-color: #954C2E;
+}
+.btn-link {
+    color: #254D70;
+    font-weight: 500;
+}
+.btn-link:hover {
+    color: #954C2E;
+}
+.error-message, .success-message {
+    margin-top: 1rem;
+    font-size: 1.05em;
+    border-radius: 7px;
+}
+.error-message {
+    color: #fff;
+    background: #954C2E;
+    border: none;
+}
+.success-message {
+    color: #fff;
+    background: #254D70;
+    border: none;
+}
+.loading-indicator {
+    text-align: center;
+    padding: 2rem;
+    display: none;
+}
+.spinner-border {
+    color: #254D70;
+}
+.progress-indicator {
+    margin-top: 1rem;
+    padding: 1.5rem;
+    background: #f8faff;
+    border: 1.5px solid #254D70;
+    border-radius: 10px;
+    display: none;
+}
+.progress-step {
+    display: flex;
+    align-items: center;
+    margin-bottom: 0.8rem;
+    padding: 0.5rem;
+    border-radius: 6px;
+    transition: background-color 0.3s;
+}
+.progress-step:last-child {
+    margin-bottom: 0;
+}
+.progress-step.active {
+    background: #e3f2fd;
+    border-left: 4px solid #254D70;
+}
+.progress-step.completed {
+    background: #e8f5e8;
+    border-left: 4px solid #28a745;
+}
+.progress-step.error {
+    background: #fff3cd;
+    border-left: 4px solid #954C2E;
+}
+.progress-step-icon {
+    margin-right: 0.8rem;
+    width: 20px;
+    text-align: center;
+}
+.progress-step-icon i {
+    font-size: 16px;
+}
+.progress-step.active .progress-step-icon i {
+    color: #254D70;
+}
+.progress-step.completed .progress-step-icon i {
+    color: #28a745;
+}
+.progress-step.error .progress-step-icon i {
+    color: #954C2E;
+}
+.progress-step-text {
+    flex: 1;
+    font-weight: 500;
+    color: #131D4F;
+}
+.progress-step.active .progress-step-text {
+    color: #254D70;
+}
+.progress-step.completed .progress-step-text {
+    color: #28a745;
+}
+.progress-step.error .progress-step-text {
+    color: #954C2E;
+}
+.excluded-dates-content {
+    font-size: 0.97em;
+}
+.excluded-year h6 {
+    color: #6c757d;
+    margin-bottom: 0.5rem;
+    border-bottom: 1px solid #dee2e6;
+    padding-bottom: 0.25rem;
+}
+.excluded-month .month-name {
+    font-weight: 500;
+    color: #495057;
+}
+.excluded-dates {
+    display: inline-block;
+    margin-left: 1rem;
+    color: #6c757d;
+}
+.date-range {
+    display: inline-block;
+    margin-right: 1rem;
+}
+.chart-container {
+    position: relative;
+    height: 420px;
+    width: 100%;
+    margin: 20px 0 10px 0;
+    background: #fff;
+    border: 1.5px solid #254D70;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px rgba(37,77,112,0.06);
+    padding: 1.2rem 1.2rem 0.5rem 1.2rem;
+}
+#resultsChart {
+    background-color: #fff;
+    border-radius: 8px;
+}
+.table-responsive {
+    background: #fff;
+    border: 1.5px solid #254D70;
+    border-radius: 10px;
+    box-shadow: 0 1px 4px rgba(37,77,112,0.03);
+    padding: 1rem 0.5rem;
+}
+table.table {
+    margin-bottom: 0;
+}
+th {
+    background: #254D70 !important;
+    color: #EFE4D2 !important;
+    font-weight: 600;
+    font-size: 1.07em;
+    border-bottom: 2px solid #131D4F !important;
+}
+td {
+    vertical-align: middle !important;
+}
+#excludedDatesBox .btn {
+    font-size: 0.98em;
+}
+#exportChartBtn {
+    margin-top: 0.5rem;
+    font-size: 1em;
+    padding: 0.4em 1.2em;
+    border-radius: 6px;
+    float: right;
+    background-color: #254D70;
+    border-color: #254D70;
+    color: #EFE4D2;
+    box-shadow: none;
+}
+#exportChartBtn:hover {
+    background-color: #954C2E;
+    border-color: #954C2E;
+    color: #fff;
+}
+/* Modal color tweaks */
+.modal-content {
+    background: #fff;
+    border-radius: 12px;
+}
+.modal-header {
+    background: #254D70;
+    color: #EFE4D2;
+    border-radius: 12px 12px 0 0;
+}
+.modal-title, .modal-header i {
+    color: #EFE4D2 !important;
+}
+.modal-body {
+    color: #131D4F;
+}
+.modal-body strong {
+    color: #954C2E;
+}

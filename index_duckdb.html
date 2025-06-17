@@ -6,269 +6,7 @@
     <title>Daily Average Traffic Calculator - DuckDB Edition</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    <style>
-        html, body {
-            font-family: 'Segoe UI', 'Roboto', 'Arial', 'sans-serif';
-            background: #EFE4D2;
-            min-height: 100vh;
-        }
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 1.5rem;
-        }
-        .main-header {
-            background: transparent;
-            border: none;
-            border-bottom: 2.5px solid #254D70;
-            box-shadow: none;
-            padding: 2.2rem 0 1.2rem 0;
-            margin-bottom: 2.5rem;
-            text-align: center;
-        }
-        .main-header h1 {
-            font-size: 2.3rem;
-            font-weight: 800;
-            color: #254D70;
-            margin-bottom: 0.3rem;
-            display: inline-flex;
-            align-items: center;
-            gap: 0.7rem;
-            letter-spacing: 0.01em;
-        }
-        .main-header i {
-            color: #954C2E;
-            font-size: 2.3rem;
-        }
-        .main-header p {
-            color: #131D4F;
-            font-size: 1.13rem;
-            margin-bottom: 0;
-            margin-top: 0.2rem;
-            font-weight: 500;
-            letter-spacing: 0.01em;
-        }
-        .duckdb-badge {
-            background: linear-gradient(45deg, #FFC107, #FF8F00);
-            color: #000;
-            padding: 0.3rem 0.8rem;
-            border-radius: 15px;
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-left: 1rem;
-            box-shadow: 0 2px 4px rgba(255,193,7,0.3);
-        }
-        .section-block {
-            background: #fff;
-            border: 1.5px solid #254D70;
-            border-radius: 12px;
-            margin-bottom: 2.5rem;
-            padding: 2.2rem 2.2rem 1.7rem 2.2rem;
-            box-shadow: 0 2px 10px rgba(37,77,112,0.06);
-        }
-        .section-header {
-            font-size: 1.25rem;
-            font-weight: 700;
-            color: #131D4F;
-            border-left: 6px solid #254D70;
-            padding-left: 0.8rem;
-            margin-bottom: 1.5rem;
-            background: none;
-        }
-        .upload-area {
-            border: 2px dashed #254D70;
-            border-radius: 12px;
-            padding: 2.2rem 1rem 1.5rem 1rem;
-            text-align: center;
-            cursor: pointer;
-            background: #fff;
-            transition: all 0.3s;
-            margin-bottom: 1.2rem;
-        }
-        .upload-area:hover, .upload-area.dragover {
-            border-color: #954C2E;
-            background: #f5e8d9;
-        }
-        .upload-area i {
-            color: #954C2E;
-            font-size: 2.7rem;
-            margin-bottom: 0.7rem;
-        }
-        #csvData {
-            margin-top: 1.2rem;
-            margin-bottom: 0.7rem;
-        }
-        #previewArea {
-            margin-bottom: 1.2rem;
-        }
-        .form-check {
-            margin-bottom: 0.7rem;
-        }
-        .form-check-label {
-            font-size: 1.04em;
-        }
-        .form-label {
-            font-weight: 500;
-        }
-        .form-select, .form-control {
-            border-radius: 8px;
-        }
-        #mappingArea {
-            background: #f8faff;
-            border-radius: 8px;
-            padding: 1rem 1rem 0.5rem 1rem;
-            margin-top: 1.2rem;
-            margin-bottom: 1.2rem;
-        }
-        .btn-primary, .btn-success, .btn-outline-primary {
-            border-radius: 7px;
-            font-weight: 500;
-            background-color: #254D70;
-            border-color: #254D70;
-            box-shadow: none;
-        }
-        .btn-primary:hover, .btn-success:hover, .btn-outline-primary:hover {
-            background-color: #131D4F;
-            border-color: #131D4F;
-        }
-        .btn-success {
-            width: 100%;
-            font-size: 1.1em;
-            margin-top: 0.7rem;
-            margin-bottom: 1.2rem;
-            background-color: #254D70;
-            border-color: #254D70;
-        }
-        .btn-success:hover {
-            background-color: #954C2E;
-            border-color: #954C2E;
-        }
-        .btn-link {
-            color: #254D70;
-            font-weight: 500;
-        }
-        .btn-link:hover {
-            color: #954C2E;
-        }
-        .error-message, .success-message {
-            margin-top: 1rem;
-            font-size: 1.05em;
-            border-radius: 7px;
-        }
-        .error-message {
-            color: #fff;
-            background: #954C2E;
-            border: none;
-        }
-        .success-message {
-            color: #fff;
-            background: #254D70;
-            border: none;
-        }
-        .loading-indicator {
-            text-align: center;
-            padding: 2rem;
-            display: none;
-        }
-        .spinner-border {
-            color: #254D70;
-        }
-        .excluded-dates-content {
-            font-size: 0.97em;
-        }
-        .excluded-year h6 {
-            color: #6c757d;
-            margin-bottom: 0.5rem;
-            border-bottom: 1px solid #dee2e6;
-            padding-bottom: 0.25rem;
-        }
-        .excluded-month .month-name {
-            font-weight: 500;
-            color: #495057;
-        }
-        .excluded-dates {
-            display: inline-block;
-            margin-left: 1rem;
-            color: #6c757d;
-        }
-        .date-range {
-            display: inline-block;
-            margin-right: 1rem;
-        }
-        .chart-container {
-            position: relative;
-            height: 420px;
-            width: 100%;
-            margin: 20px 0 10px 0;
-            background: #fff;
-            border: 1.5px solid #254D70;
-            border-radius: 10px;
-            box-shadow: 0 2px 8px rgba(37,77,112,0.06);
-            padding: 1.2rem 1.2rem 0.5rem 1.2rem;
-        }
-        #resultsChart {
-            background-color: #fff;
-            border-radius: 8px;
-        }
-        .table-responsive {
-            background: #fff;
-            border: 1.5px solid #254D70;
-            border-radius: 10px;
-            box-shadow: 0 1px 4px rgba(37,77,112,0.03);
-            padding: 1rem 0.5rem;
-        }
-        table.table {
-            margin-bottom: 0;
-        }
-        th {
-            background: #254D70 !important;
-            color: #EFE4D2 !important;
-            font-weight: 600;
-            font-size: 1.07em;
-            border-bottom: 2px solid #131D4F !important;
-        }
-        td {
-            vertical-align: middle !important;
-        }
-        #excludedDatesBox .btn {
-            font-size: 0.98em;
-        }
-        #exportChartBtn {
-            margin-top: 0.5rem;
-            font-size: 1em;
-            padding: 0.4em 1.2em;
-            border-radius: 6px;
-            float: right;
-            background-color: #254D70;
-            border-color: #254D70;
-            color: #EFE4D2;
-            box-shadow: none;
-        }
-        #exportChartBtn:hover {
-            background-color: #954C2E;
-            border-color: #954C2E;
-            color: #fff;
-        }
-        /* Modal color tweaks */
-        .modal-content {
-            background: #fff;
-            border-radius: 12px;
-        }
-        .modal-header {
-            background: #254D70;
-            color: #EFE4D2;
-            border-radius: 12px 12px 0 0;
-        }
-        .modal-title, .modal-header i {
-            color: #EFE4D2 !important;
-        }
-        .modal-body {
-            color: #131D4F;
-        }
-        .modal-body strong {
-            color: #954C2E;
-        }
-    </style>
+    <link href="style_duckdb.css" rel="stylesheet">
 </head>
 <body>
     <div class="container">
@@ -276,15 +14,17 @@
             <h1>
                 <i class="fas fa-chart-bar"></i>
                 Daily Average Traffic Calculator
-                <span class="duckdb-badge">
-                    <i class="fas fa-rocket me-1"></i>Powered by DuckDB
-                </span>
             </h1>
-            <p>Calculate monthly daily average midweek traffic from your CSV data - now running entirely in your browser!</p>
+            <p>Calculate monthly daily average traffic from your CSV data with customizable day filtering</p>
         </header>
         
         <section class="section-block mb-4">
             <div class="section-header">Upload & Configure</div>
+            
+            <div class="progress" id="csvUploadProgressBar" style="height: 18px; display: none; margin-bottom: 1rem;">
+              <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+            </div>
+            
             <div class="upload-area" id="uploadArea">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <h5 class="mb-2">Drag & Drop your CSV file here</h5>
@@ -312,7 +52,52 @@
                 <label class="form-check-label" for="excludeHolidays">
                     Exclude holidays/restriction dates
                 </label>
-            </div><div class="mt-3" id="mappingArea" style="display:none;">
+            </div>
+            
+            <div class="mt-3 mb-3">
+                <label class="form-label"><strong>Select Days of Week to Include:</strong></label>
+                <div class="row g-2">
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="0" id="daySunday">
+                            <label class="form-check-label" for="daySunday">Sunday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="1" id="dayMonday">
+                            <label class="form-check-label" for="dayMonday">Monday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="2" id="dayTuesday" checked>
+                            <label class="form-check-label" for="dayTuesday">Tuesday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="3" id="dayWednesday" checked>
+                            <label class="form-check-label" for="dayWednesday">Wednesday</label>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="4" id="dayThursday" checked>
+                            <label class="form-check-label" for="dayThursday">Thursday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="5" id="dayFriday">
+                            <label class="form-check-label" for="dayFriday">Friday</label>
+                        </div>
+                        <div class="form-check">
+                            <input class="form-check-input" type="checkbox" value="6" id="daySaturday">
+                            <label class="form-check-label" for="daySaturday">Saturday</label>
+                        </div>
+                        <div class="mt-2">
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectAllDays()">Select All</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectMidweekDays()">Midweek Only</button>
+                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearAllDays()">Clear All</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+<div class="mt-3" id="mappingArea" style="display:none;">
                 <label class="form-label"><strong>Map Columns:</strong></label>                <div class="row g-2">
                     <div class="col-md-6">
                         <label for="datetimeCol" class="form-label">Datetime column</label>
@@ -333,12 +118,58 @@
             <button class="btn btn-success" onclick="processData()">
                 <i class="fas fa-play me-1"></i> Process Data
             </button>
-            
-            <div class="loading-indicator">
+              <div class="loading-indicator">
                 <div class="spinner-border" role="status">
                     <span class="visually-hidden">Loading...</span>
                 </div>
-                <p class="mt-2">Processing data with DuckDB...</p>
+                <p class="mt-2">Processing data...</p>
+            </div>
+            
+            <div class="progress-indicator" id="progressIndicator">
+                <h6 class="mb-3" style="color: #254D70; font-weight: 600;">
+                    <i class="fas fa-cogs me-2"></i>Processing Steps
+                </h6>
+                <div class="progress-step" id="step-init">
+                    <div class="progress-step-icon">
+                        <i class="fas fa-circle-notch"></i>
+                    </div>
+                    <div class="progress-step-text">Initializing DuckDB database</div>
+                </div>
+                <div class="progress-step" id="step-load">
+                    <div class="progress-step-icon">
+                        <i class="fas fa-circle-notch"></i>
+                    </div>
+                    <div class="progress-step-text">Loading and parsing CSV data</div>
+                </div>
+                <div class="progress-step" id="step-clean">
+                    <div class="progress-step-icon">
+                        <i class="fas fa-circle-notch"></i>
+                    </div>
+                    <div class="progress-step-text">Cleaning and filtering data</div>
+                </div>
+                <div class="progress-step" id="step-holidays">
+                    <div class="progress-step-icon">
+                        <i class="fas fa-circle-notch"></i>
+                    </div>
+                    <div class="progress-step-text">Applying holiday exclusions</div>
+                </div>                <div class="progress-step" id="step-midweek">
+                    <div class="progress-step-icon">
+                        <i class="fas fa-circle-notch"></i>
+                    </div>
+                    <div class="progress-step-text">Filtering for selected days</div>
+                </div>
+                <div class="progress-step" id="step-calculate">
+                    <div class="progress-step-icon">
+                        <i class="fas fa-circle-notch"></i>
+                    </div>
+                    <div class="progress-step-text">Calculating daily averages</div>
+                </div>
+                <div class="progress-step" id="step-display">
+                    <div class="progress-step-icon">
+                        <i class="fas fa-circle-notch"></i>
+                    </div>
+                    <div class="progress-step-text">Generating results and charts</div>
+                </div>
             </div>
             
             <div class="error-message alert" style="display:none;"></div>
@@ -390,11 +221,10 @@
                     <h5 class="modal-title" id="explanationModalLabel"><i class="fas fa-info-circle me-2"></i>How is the Daily Average Traffic calculated?</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                   </div>                  <div class="modal-body">
-                    <p class="mb-2">The calculation follows these steps using DuckDB WebAssembly:</p>
-                    <ol class="mb-2">
-                        <li>Data is filtered to include only <strong>Tuesday, Wednesday, and Thursday</strong> (midweek days)</li>
+                    <p class="mb-2">The calculation follows these steps:</p>                    <ol class="mb-2">
+                        <li>Data is filtered to include only the <strong>selected days of the week</strong> (configurable by user)</li>
                         <li>If the "Coverage %" column exists, only records with 100% coverage are included</li>
-                        <li>If "Exclude holidays/restriction dates" is checked, dates within holiday/restriction periods are excluded</li>                        <li>If direction data is present and "Aggregate all directions" is checked, traffic counts are summed across all directions</li>
+                        <li>If "Exclude holidays/restriction dates" is checked, dates within holiday/restriction periods are excluded</li><li>If direction data is present and "Aggregate all directions" is checked, traffic counts are summed across all directions</li>
                         <li>For each month (and direction, if not aggregating):
                             <ul>
                                 <li>Data is grouped by hour (0-23)</li>
@@ -404,7 +234,7 @@
                             </ul>
                         </li>
                     </ol>
-                    <p class="mb-0"><small class="text-muted">Note: DuckDB performs all calculations in-browser with excellent performance for large datasets. No data leaves your computer!</small></p>
+                    <p class="mb-0"><small class="text-muted">Note: DuckDB performs all calculations in-browser. No data leaves your computer!</small></p>
                   </div>
                 </div>
               </div>
@@ -415,862 +245,1033 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
     <script type="module">
-        import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.0/+esm';
+// =============================
+// DuckDB Web App Main Script
+// =============================
 
-        // Initialize DuckDB
-        let db;
-        let conn;
+// --------- 1. Imports & Globals ---------
+import * as duckdb from 'https://cdn.jsdelivr.net/npm/@duckdb/duckdb-wasm@1.28.0/+esm';
 
-        // Holiday/restriction dates (from the CSV)
-        const restrictionDates = [
-            // 2022-2023
-            '2022-12-30', '2022-12-31', '2023-01-01', '2023-01-16', '2023-02-20',
-            '2023-05-26', '2023-05-27', '2023-05-28', '2023-05-29', '2023-05-30',
-            '2023-06-19', '2023-06-30', '2023-07-01', '2023-07-02', '2023-07-03',
-            '2023-07-04', '2023-07-05', '2023-07-06', '2023-07-07', '2023-09-01',
-            '2023-09-02', '2023-09-03', '2023-09-04', '2023-09-05', '2023-09-06',
-            '2023-09-07', '2023-09-08', '2023-10-09', '2023-11-20', '2023-11-21',
-            '2023-11-22', '2023-11-23', '2023-11-24', '2023-11-25', '2023-11-26',
-            '2023-11-27', '2023-12-22', '2023-12-23', '2023-12-24', '2023-12-25',
-            '2023-12-26', '2023-12-27', '2023-12-28', '2023-12-29',
-            // 2023-2024 overlap
-            '2023-12-29', '2023-12-30', '2023-12-31', '2024-01-01',
-            // 2024
-            '2024-01-15', '2024-02-19', '2024-05-24', '2024-05-25', '2024-05-26',
-            '2024-05-27', '2024-05-28', '2024-06-19', '2024-07-01', '2024-07-02',
-            '2024-07-03', '2024-07-04', '2024-07-05', '2024-07-06', '2024-07-07',
-            '2024-08-30', '2024-08-31', '2024-09-01', '2024-09-02', '2024-09-03',
-            '2024-09-04', '2024-09-05', '2024-09-06', '2024-10-14', '2024-11-11',
-            '2024-11-25', '2024-11-26', '2024-11-27', '2024-11-28', '2024-11-29',
-            '2024-11-30', '2024-12-01', '2024-12-02', '2024-12-20', '2024-12-21',
-            '2024-12-22', '2024-12-23', '2024-12-24', '2024-12-25', '2024-12-26',
-            '2024-12-27',
-            // 2024-2025 overlap
-            '2024-12-27', '2024-12-28', '2024-12-29', '2024-12-30', '2024-12-31',
-            '2025-01-01', '2025-01-02', '2025-01-03', '2025-01-04', '2025-01-05',
-            // 2025
-            '2025-01-20', '2025-02-17', '2025-05-23', '2025-05-24', '2025-05-25',
-            '2025-05-26', '2025-05-27', '2025-06-19', '2025-06-20', '2025-07-03',
-            '2025-07-04', '2025-07-05', '2025-07-06', '2025-08-29', '2025-08-30',
-            '2025-08-31', '2025-09-01', '2025-09-02', '2025-09-03', '2025-09-04',
-            '2025-09-05', '2025-10-13', '2025-11-11', '2025-11-24', '2025-11-25',
-            '2025-11-26', '2025-11-27', '2025-11-28', '2025-11-29', '2025-11-30',
-            '2025-12-01', '2025-12-20', '2025-12-21', '2025-12-22', '2025-12-23',
-            '2025-12-24', '2025-12-25', '2025-12-26',
-            // 2025-2026 overlap
-            '2025-12-26', '2025-12-27', '2025-12-28', '2025-12-29', '2025-12-30',
-            '2025-12-31', '2026-01-01', '2026-01-02', '2026-01-03', '2026-01-04'
-        ];
+let db; // DuckDB instance
+let conn; // DuckDB connection
+let chartInstance = null;
 
-        async function initDuckDB() {
-            try {
-                console.log('Initializing DuckDB...');
-                const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
-                const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);
-                const worker = await duckdb.createWorker(bundle.mainWorker);
-                const logger = new duckdb.ConsoleLogger();
-                db = new duckdb.AsyncDuckDB(logger, worker);
-                await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
-                conn = await db.connect();
-                console.log('DuckDB initialized successfully');
-            } catch (error) {
-                console.error('Failed to initialize DuckDB:', error);
-                showError('Failed to initialize DuckDB database engine');
+// --------- 2. Holiday/Restriction Dates ---------
+const restrictionDates = [
+    // 2022-2023
+    '2022-12-30', '2022-12-31', '2023-01-01', '2023-01-16', '2023-02-20',
+    '2023-05-26', '2023-05-27', '2023-05-28', '2023-05-29', '2023-05-30',
+    '2023-06-19', '2023-06-30', '2023-07-01', '2023-07-02', '2023-07-03',
+    '2023-07-04', '2023-07-05', '2023-07-06', '2023-07-07', '2023-09-01',
+    '2023-09-02', '2023-09-03', '2023-09-04', '2023-09-05', '2023-09-06',
+    '2023-09-07', '2023-09-08', '2023-10-09', '2023-11-20', '2023-11-21',
+    '2023-11-22', '2023-11-23', '2023-11-24', '2023-11-25', '2023-11-26',
+    '2023-11-27', '2023-12-22', '2023-12-23', '2023-12-24', '2023-12-25',
+    '2023-12-26', '2023-12-27', '2023-12-28', '2023-12-29',
+    // 2023-2024 overlap
+    '2023-12-29', '2023-12-30', '2023-12-31', '2024-01-01',
+    // 2024
+    '2024-01-15', '2024-02-19', '2024-05-24', '2024-05-25', '2024-05-26',
+    '2024-05-27', '2024-05-28', '2024-06-19', '2024-07-01', '2024-07-02',
+    '2024-07-03', '2024-07-04', '2024-07-05', '2024-07-06', '2024-07-07',
+    '2024-08-30', '2024-08-31', '2024-09-01', '2024-09-02', '2024-09-03',
+    '2024-09-04', '2024-09-05', '2024-09-06', '2024-10-14', '2024-11-11',
+    '2024-11-25', '2024-11-26', '2024-11-27', '2024-11-28', '2024-11-29',
+    '2024-11-30', '2024-12-01', '2024-12-02', '2024-12-20', '2024-12-21',
+    '2024-12-22', '2024-12-23', '2024-12-24', '2024-12-25', '2024-12-26',
+    '2024-12-27',
+    // 2024-2025 overlap
+    '2024-12-27', '2024-12-28', '2024-12-29', '2024-12-30', '2024-12-31',
+    '2025-01-01', '2025-01-02', '2025-01-03', '2025-01-04', '2025-01-05',
+    // 2025
+    '2025-01-20', '2025-02-17', '2025-05-23', '2025-05-24', '2025-05-25',
+    '2025-05-26', '2025-05-27', '2025-06-19', '2025-06-20', '2025-07-03',
+    '2025-07-04', '2025-07-05', '2025-07-06', '2025-08-29', '2025-08-30',
+    '2025-08-31', '2025-09-01', '2025-09-02', '2025-09-03', '2025-09-04',
+    '2025-09-05', '2025-10-13', '2025-11-11', '2025-11-24', '2025-11-25',
+    '2025-11-26', '2025-11-27', '2025-11-28', '2025-11-29', '2025-11-30',
+    '2025-12-01', '2025-12-20', '2025-12-21', '2025-12-22', '2025-12-23',
+    '2025-12-24', '2025-12-25', '2025-12-26',
+    // 2025-2026 overlap
+    '2025-12-26', '2025-12-27', '2025-12-28', '2025-12-29', '2025-12-30',
+    '2025-12-31', '2026-01-01', '2026-01-02', '2026-01-03', '2026-01-04'
+];
+
+// --------- 3. DOM Elements ---------
+const uploadArea = document.getElementById('uploadArea');
+const fileInput = document.getElementById('fileInput');
+const csvData = document.getElementById('csvData');
+const loading = document.querySelector('.loading-indicator');
+const errorMessage = document.querySelector('.error-message');
+const successMessage = document.querySelector('.success-message');
+const resultsBody = document.getElementById('resultsBody');
+const csvUploadProgressBar = document.getElementById('csvUploadProgressBar');
+const csvUploadProgressBarInner = csvUploadProgressBar ? csvUploadProgressBar.querySelector('.progress-bar') : null;
+
+// --------- 4. DuckDB Initialization ---------
+async function initDuckDB() {
+    try {
+        console.log('Initializing DuckDB...');
+        // Step 1: Load DuckDB WASM
+        const JSDELIVR_BUNDLES = duckdb.getJsDelivrBundles();
+        const bundle = await duckdb.selectBundle(JSDELIVR_BUNDLES);
+        const worker = await duckdb.createWorker(bundle.mainWorker);
+        const logger = new duckdb.ConsoleLogger();
+        db = new duckdb.AsyncDuckDB(logger, worker);
+        await db.instantiate(bundle.mainModule, bundle.pthreadWorker);
+        conn = await db.connect();
+        console.log('DuckDB initialized successfully');
+    } catch (error) {
+        console.error('Failed to initialize DuckDB:', error);
+        showError('Failed to initialize DuckDB database engine');
+    }
+}
+// Initialize DuckDB on page load
+initDuckDB();
+
+// --------- 5. File Upload & CSV Preview ---------
+// Drag and drop handlers
+['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, preventDefaults, false);
+});
+function preventDefaults(e) {
+    e.preventDefault();
+    e.stopPropagation();
+}
+['dragenter', 'dragover'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, highlight, false);
+});
+['dragleave', 'drop'].forEach(eventName => {
+    uploadArea.addEventListener(eventName, unhighlight, false);
+});
+function highlight(e) { uploadArea.classList.add('dragover'); }
+function unhighlight(e) { uploadArea.classList.remove('dragover'); }
+uploadArea.addEventListener('drop', handleDrop, false);
+function handleDrop(e) {
+    const dt = e.dataTransfer;
+    const files = dt.files;
+    fileInput.files = files;
+    handleFileChange();
+}
+fileInput.addEventListener('change', handleFileChange);
+function handleFileChange() {
+    if (fileInput.files.length > 0) {
+        csvData.value = '';
+        previewCSVFiles(fileInput.files);
+    }
+}
+csvData.addEventListener('input', function() {
+    if (this.value.trim() !== '') {
+        fileInput.value = '';
+        previewCSVText(this.value.trim());
+    } else {
+        clearPreview();
+    }
+});
+// Preview CSV files and show progress bar
+function previewCSVFiles(files) {
+    if (!files || files.length === 0) { 
+        clearPreview(); 
+        clearMapping(); 
+        if (csvUploadProgressBar) csvUploadProgressBar.style.display = 'none';
+        return; 
+    }
+    const readers = [];
+    let loaded = 0;
+    let allTexts = [];
+    let totalSize = 0;
+    let loadedSize = 0;
+    for (let i = 0; i < files.length; i++) {
+        totalSize += files[i].size;
+    }
+    if (csvUploadProgressBar) {
+        csvUploadProgressBar.style.display = 'block';
+        csvUploadProgressBarInner.style.width = '0%';
+        csvUploadProgressBarInner.setAttribute('aria-valuenow', '0');
+        csvUploadProgressBarInner.textContent = '0%';
+    }
+    for (let i = 0; i < files.length; i++) {
+        const reader = new FileReader();
+        readers.push(reader);
+        reader.onprogress = function(e) {
+            if (e.lengthComputable) {
+                loadedSize += e.loaded;
+                let percent = Math.min(100, Math.round((loadedSize / totalSize) * 100));
+                if (csvUploadProgressBar) {
+                    csvUploadProgressBarInner.style.width = percent + '%';
+                    csvUploadProgressBarInner.setAttribute('aria-valuenow', percent);
+                    csvUploadProgressBarInner.textContent = percent + '%';
+                }
             }
-        }
-
-        // DOM elements
-        const uploadArea = document.getElementById('uploadArea');
-        const fileInput = document.getElementById('fileInput');
-        const csvData = document.getElementById('csvData');
-        const loading = document.querySelector('.loading-indicator');
-        const errorMessage = document.querySelector('.error-message');
-        const successMessage = document.querySelector('.success-message');
-        const resultsBody = document.getElementById('resultsBody');
-
-        // Initialize DuckDB on page load
-        initDuckDB();
-
-        // Drag and drop handlers
-        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, preventDefaults, false);
-        });
-
-        function preventDefaults(e) {
-            e.preventDefault();
-            e.stopPropagation();
-        }
-
-        ['dragenter', 'dragover'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, highlight, false);
-        });
-
-        ['dragleave', 'drop'].forEach(eventName => {
-            uploadArea.addEventListener(eventName, unhighlight, false);
-        });
-
-        function highlight(e) {
-            uploadArea.classList.add('dragover');
-        }
-
-        function unhighlight(e) {
-            uploadArea.classList.remove('dragover');
-        }
-
-        uploadArea.addEventListener('drop', handleDrop, false);
-
-        function handleDrop(e) {
-            const dt = e.dataTransfer;
-            const files = dt.files;
-            fileInput.files = files;
-            handleFileChange();
-        }
-
-        fileInput.addEventListener('change', handleFileChange);
-
-        function handleFileChange() {
-            if (fileInput.files.length > 0) {
-                csvData.value = '';
-                previewCSVFiles(fileInput.files);
+        };
+        reader.onload = function(e) {
+            allTexts[i] = e.target.result;
+            loaded++;
+            if (loaded === files.length) {
+                if (csvUploadProgressBar) {
+                    csvUploadProgressBarInner.style.width = '100%';
+                    csvUploadProgressBarInner.setAttribute('aria-valuenow', '100');
+                    csvUploadProgressBarInner.textContent = '100%';
+                    setTimeout(() => { csvUploadProgressBar.style.display = 'none'; }, 500);
+                }
+                // Concatenate CSVs, removing duplicate headers
+                let combined = '';
+                for (let j = 0; j < allTexts.length; j++) {
+                    let lines = allTexts[j].split(/\r?\n/);
+                    if (j > 0 && lines.length > 0) {
+                        lines = lines.slice(1); // Remove header from all but first
+                    }
+                    combined += (j === 0 ? '' : '\n') + lines.join('\n');
+                }
+                previewCSVText(combined);
+                setupMapping(combined);
             }
-        }
+        };
+        reader.readAsText(files[i]);
+    }
+}
+function previewCSVText(text) {
+    if (!text) { 
+        clearPreview(); 
+        clearMapping(); 
+        return; 
+    }
+    const lines = text.split(/\r?\n/).slice(0, 10); // Show first 10 lines
+    document.getElementById('csvPreview').textContent = lines.join('\n');
+    document.getElementById('previewArea').style.display = 'block';
+    setupMapping(text);
+}
+function clearPreview() {
+    document.getElementById('csvPreview').textContent = '';
+    document.getElementById('previewArea').style.display = 'none';
+}        let currentCsvText = '';
 
-        csvData.addEventListener('input', function() {
-            if (this.value.trim() !== '') {
-                fileInput.value = '';
-                previewCSVText(this.value.trim());
-            } else {
-                clearPreview();
+// --------- 6. Column Mapping UI ---------
+function setupMapping(text) {
+    const mappingArea = document.getElementById('mappingArea');
+    if (!text) { 
+        clearMapping(); 
+        return; 
+    }
+    
+    currentCsvText = text; // Store CSV text
+    
+    const firstLine = text.split(/\r?\n/)[0];
+    if (!firstLine) { 
+        clearMapping(); 
+        return; 
+    }
+    
+    const headers = firstLine.split(',').map(h => h.trim().replace(/"/g, ''));
+      // Populate dropdowns
+    const datetimeCol = document.getElementById('datetimeCol');
+    const countCol = document.getElementById('countCol');
+    const directionCol = document.getElementById('directionCol');
+    
+    if (!datetimeCol || !countCol || !directionCol) return;
+    
+    datetimeCol.innerHTML = '';
+    countCol.innerHTML = '';
+    directionCol.innerHTML = '<option value="">(None)</option>';
+    
+    headers.forEach(h => {
+        const opt1 = document.createElement('option');
+        opt1.value = h; 
+        opt1.textContent = h;
+        datetimeCol.appendChild(opt1.cloneNode(true));
+        countCol.appendChild(opt1.cloneNode(true));
+        directionCol.appendChild(opt1.cloneNode(true));
+    });
+    
+    // Try to auto-select likely columns
+    autoSelectColumn(datetimeCol, ['datetime', 'date', 'start time', 'time']);
+    autoSelectColumn(countCol, ['traffic_count', 'count', 'volume', 'vehicles']);
+    autoSelectColumn(directionCol, ['direction', 'dir']);
+    
+    mappingArea.style.display = 'block';
+}
+function clearMapping() {
+    document.getElementById('mappingArea').style.display = 'none';
+    currentCsvText = ''; // Clear stored CSV text
+}
+function autoSelectColumn(selectElem, keywords) {
+    const options = Array.from(selectElem.options);
+    for (const kw of keywords) {
+        const found = options.find(opt => opt.value.toLowerCase().includes(kw.toLowerCase()));
+        if (found) { 
+            selectElem.value = found.value; 
+            return; 
+        }
+    }
+    if (selectElem.options.length > 0) {
+        selectElem.selectedIndex = 0;
+    }
+}
+
+// --------- 7. Day Selection Helpers ---------
+window.selectAllDays = function() {
+    const dayCheckboxes = ['daySunday', 'dayMonday', 'dayTuesday', 'dayWednesday', 'dayThursday', 'dayFriday', 'daySaturday'];
+    dayCheckboxes.forEach(id => {
+        document.getElementById(id).checked = true;
+    });
+};
+window.selectMidweekDays = function() {
+    const dayCheckboxes = ['daySunday', 'dayMonday', 'dayTuesday', 'dayWednesday', 'dayThursday', 'dayFriday', 'daySaturday'];
+    const midweekDays = ['dayTuesday', 'dayWednesday', 'dayThursday'];
+    dayCheckboxes.forEach(id => {
+        document.getElementById(id).checked = midweekDays.includes(id);
+    });
+};
+window.clearAllDays = function() {
+    const dayCheckboxes = ['daySunday', 'dayMonday', 'dayTuesday', 'dayWednesday', 'dayThursday', 'dayFriday', 'daySaturday'];
+    dayCheckboxes.forEach(id => {
+        document.getElementById(id).checked = false;
+    });
+};
+
+// --------- 8. Main Data Processing Pipeline ---------
+window.processData = async function() {
+    if (!db || !conn) {
+        showError('DuckDB is not initialized yet. Please wait a moment and try again.');
+        return;
+    }            try {
+        // Get configuration
+        const aggregateDirections = document.getElementById('aggregateDirections').checked;
+        const excludeHolidays = document.getElementById('excludeHolidays').checked;
+        
+        // Get selected days of week
+        const selectedDays = [];
+        const dayCheckboxes = ['daySunday', 'dayMonday', 'dayTuesday', 'dayWednesday', 'dayThursday', 'dayFriday', 'daySaturday'];
+        dayCheckboxes.forEach((id, index) => {
+            if (document.getElementById(id).checked) {
+                selectedDays.push(index);
             }
         });
+        
+        if (selectedDays.length === 0) {
+            showError('Please select at least one day of the week to include');
+            return;
+        }
+        
+        const datetimeCol = document.getElementById('datetimeCol').value;
+        const countCol = document.getElementById('countCol').value;
+        const directionCol = document.getElementById('directionCol').value;
 
-        function previewCSVFiles(files) {
-            if (!files || files.length === 0) { 
-                clearPreview(); 
-                clearMapping(); 
-                return; 
-            }
-            
-            const readers = [];
-            let loaded = 0;
+        if (!datetimeCol || !countCol) {
+            showError('Please select datetime and traffic count columns');
+            return;
+        }
+
+        // Get CSV data
+        let csvText = '';
+        if (fileInput.files.length > 0) {
+            // Read files
             let allTexts = [];
+            let loaded = 0;
             
-            for (let i = 0; i < files.length; i++) {
+            for (let i = 0; i < fileInput.files.length; i++) {
                 const reader = new FileReader();
-                readers.push(reader);
                 reader.onload = function(e) {
                     allTexts[i] = e.target.result;
                     loaded++;
-                    if (loaded === files.length) {
-                        // Concatenate CSVs, removing duplicate headers
+                    if (loaded === fileInput.files.length) {
+                        // Concatenate CSVs
                         let combined = '';
                         for (let j = 0; j < allTexts.length; j++) {
                             let lines = allTexts[j].split(/\r?\n/);
                             if (j > 0 && lines.length > 0) {
-                                lines = lines.slice(1); // Remove header from all but first
+                                lines = lines.slice(1); // Remove header
                             }
                             combined += (j === 0 ? '' : '\n') + lines.join('\n');
                         }
-                        previewCSVText(combined);
-                        setupMapping(combined);
+                        processCsvData(combined, aggregateDirections, excludeHolidays, selectedDays, datetimeCol, countCol, directionCol);
                     }
                 };
-                reader.readAsText(files[i]);
+                reader.readAsText(fileInput.files[i]);
             }
+            return;
+        } else if (csvData.value.trim()) {
+            csvText = csvData.value.trim();
+        } else {
+            showError('Please either upload a file or paste CSV data');
+            return;
         }
 
-        function previewCSVText(text) {
-            if (!text) { 
-                clearPreview(); 
-                clearMapping(); 
-                return; 
-            }
-            const lines = text.split(/\r?\n/).slice(0, 10); // Show first 10 lines
-            document.getElementById('csvPreview').textContent = lines.join('\n');
-            document.getElementById('previewArea').style.display = 'block';
-            setupMapping(text);
+        await processCsvData(csvText, aggregateDirections, excludeHolidays, selectedDays, datetimeCol, countCol, directionCol);
+
+    } catch (error) {
+        console.error('Error processing data:', error);
+        showError('Error processing data: ' + error.message);
+        hideLoading();
+    }
+};
+async function processCsvData(csvText, aggregateDirections, excludeHolidays, selectedDays, datetimeCol, countCol, directionCol) {
+    showLoading();
+    showProgress();
+    hideMessages();
+
+    try {
+        console.log('Processing CSV data with DuckDB...');                // Step 1: Initialize DuckDB
+        await updateProgressStep('step-init', 'active');
+
+        // Drop existing table if it exists
+        try {
+            await conn.query('DROP TABLE IF EXISTS traffic_data');
+        } catch (e) {
+            // Ignore error if table doesn't exist
+        }
+        await updateProgressStep('step-init', 'completed');
+
+        // Step 2: Load and parse CSV data
+        await updateProgressStep('step-load', 'active');
+        console.log('Creating table from CSV...');
+        
+        // Register the CSV data as a file in DuckDB's virtual filesystem
+        await db.registerFileText('traffic_data.csv', csvText);
+        
+        // Create table from the CSV file
+        await conn.query(`
+            CREATE TABLE traffic_data AS 
+            SELECT * FROM read_csv_auto('traffic_data.csv', header=true)
+        `);                // Get table info
+        const infoResult = await conn.query('DESCRIBE traffic_data');
+        console.log('Table structure:', infoResult.toArray());
+        await updateProgressStep('step-load', 'completed');
+
+        // Step 3: Clean and filter data
+        await updateProgressStep('step-clean', 'active');
+        // Clean and rename columns
+        let sql = `
+            CREATE OR REPLACE TABLE traffic_data_clean AS
+            SELECT 
+                "${datetimeCol}"::TIMESTAMP AS datetime,
+                "${countCol}"::INTEGER AS traffic_count
+        `;if (directionCol) {
+            sql += `, "${directionCol}" AS direction`;
         }
 
-        function clearPreview() {
-            document.getElementById('csvPreview').textContent = '';
-            document.getElementById('previewArea').style.display = 'none';
-        }        let currentCsvText = '';
-
-        function setupMapping(text) {
-            const mappingArea = document.getElementById('mappingArea');
-            if (!text) { 
-                clearMapping(); 
-                return; 
-            }
-            
-            currentCsvText = text; // Store CSV text
-            
-            const firstLine = text.split(/\r?\n/)[0];
-            if (!firstLine) { 
-                clearMapping(); 
-                return; 
-            }
-            
-            const headers = firstLine.split(',').map(h => h.trim().replace(/"/g, ''));
-              // Populate dropdowns
-            const datetimeCol = document.getElementById('datetimeCol');
-            const countCol = document.getElementById('countCol');
-            const directionCol = document.getElementById('directionCol');
-            
-            if (!datetimeCol || !countCol || !directionCol) return;
-            
-            datetimeCol.innerHTML = '';
-            countCol.innerHTML = '';
-            directionCol.innerHTML = '<option value="">(None)</option>';
-            
-            headers.forEach(h => {
-                const opt1 = document.createElement('option');
-                opt1.value = h; 
-                opt1.textContent = h;
-                datetimeCol.appendChild(opt1.cloneNode(true));
-                countCol.appendChild(opt1.cloneNode(true));
-                directionCol.appendChild(opt1.cloneNode(true));
-            });
-            
-            // Try to auto-select likely columns
-            autoSelectColumn(datetimeCol, ['datetime', 'date', 'start time', 'time']);
-            autoSelectColumn(countCol, ['traffic_count', 'count', 'volume', 'vehicles']);
-            autoSelectColumn(directionCol, ['direction', 'dir']);
-            
-            mappingArea.style.display = 'block';        }
-
-        function clearMapping() {
-            document.getElementById('mappingArea').style.display = 'none';
-            currentCsvText = ''; // Clear stored CSV text
+        // Add coverage column if it exists
+        const columns = infoResult.toArray().map(row => row.column_name);
+        if (columns.includes('Coverage %')) {
+            sql += ', "Coverage %"::INTEGER AS coverage_pct';
         }
 
-        function autoSelectColumn(selectElem, keywords) {
-            const options = Array.from(selectElem.options);
-            for (const kw of keywords) {
-                const found = options.find(opt => opt.value.toLowerCase().includes(kw.toLowerCase()));
-                if (found) { 
-                    selectElem.value = found.value; 
-                    return; 
-                }
-            }
-            if (selectElem.options.length > 0) {
-                selectElem.selectedIndex = 0;
-            }
+        sql += ' FROM traffic_data';                await conn.query(sql);
+
+        // Filter for 100% coverage if column exists
+        if (columns.includes('Coverage %')) {
+            await conn.query('DELETE FROM traffic_data_clean WHERE coverage_pct != 100');
         }
 
-        let chartInstance = null;        window.processData = async function() {
-            if (!db || !conn) {
-                showError('DuckDB is not initialized yet. Please wait a moment and try again.');
-                return;
-            }            try {
-                // Get configuration
-                const aggregateDirections = document.getElementById('aggregateDirections').checked;
-                const excludeHolidays = document.getElementById('excludeHolidays').checked;                const datetimeCol = document.getElementById('datetimeCol').value;
-                const countCol = document.getElementById('countCol').value;
-                const directionCol = document.getElementById('directionCol').value;
+        // Add date and time components (one column at a time)
+        await conn.query(`ALTER TABLE traffic_data_clean ADD COLUMN date_only DATE`);
+        await conn.query(`ALTER TABLE traffic_data_clean ADD COLUMN day_of_week INTEGER`);
+        await conn.query(`ALTER TABLE traffic_data_clean ADD COLUMN hour INTEGER`);
+        await conn.query(`ALTER TABLE traffic_data_clean ADD COLUMN year INTEGER`);
+        await conn.query(`ALTER TABLE traffic_data_clean ADD COLUMN month INTEGER`);
 
-                if (!datetimeCol || !countCol) {
-                    showError('Please select datetime and traffic count columns');
-                    return;
-                }
+        await conn.query(`
+            UPDATE traffic_data_clean SET 
+                date_only = datetime::DATE,
+                day_of_week = EXTRACT(DOW FROM datetime),
+                hour = EXTRACT(HOUR FROM datetime),
+                year = EXTRACT(YEAR FROM datetime),                        month = EXTRACT(MONTH FROM datetime)
+        `);
+        await updateProgressStep('step-clean', 'completed');
 
-                // Get CSV data
-                let csvText = '';
-                if (fileInput.files.length > 0) {
-                    // Read files
-                    let allTexts = [];
-                    let loaded = 0;
-                    
-                    for (let i = 0; i < fileInput.files.length; i++) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            allTexts[i] = e.target.result;
-                            loaded++;
-                            if (loaded === fileInput.files.length) {
-                                // Concatenate CSVs
-                                let combined = '';
-                                for (let j = 0; j < allTexts.length; j++) {
-                                    let lines = allTexts[j].split(/\r?\n/);
-                                    if (j > 0 && lines.length > 0) {
-                                        lines = lines.slice(1); // Remove header
-                                    }
-                                    combined += (j === 0 ? '' : '\n') + lines.join('\n');
-                                }
-                                processCsvData(combined, aggregateDirections, excludeHolidays, datetimeCol, countCol, directionCol);
-                            }
-                        };
-                        reader.readAsText(fileInput.files[i]);
-                    }
-                    return;
-                } else if (csvData.value.trim()) {
-                    csvText = csvData.value.trim();
-                } else {
-                    showError('Please either upload a file or paste CSV data');
-                    return;
-                }
-
-                await processCsvData(csvText, aggregateDirections, excludeHolidays, datetimeCol, countCol, directionCol);
-
-            } catch (error) {
-                console.error('Error processing data:', error);
-                showError('Error processing data: ' + error.message);
-                hideLoading();
-            }
-        };
-
-        async function processCsvData(csvText, aggregateDirections, excludeHolidays, datetimeCol, countCol, directionCol) {
-            showLoading();
-            hideMessages();
-
-            try {
-                console.log('Processing CSV data with DuckDB...');
-
-                // Drop existing table if it exists
-                try {
-                    await conn.query('DROP TABLE IF EXISTS traffic_data');
-                } catch (e) {
-                    // Ignore error if table doesn't exist
-                }                // Create table from CSV using DuckDB's CSV reading functionality
-                console.log('Creating table from CSV...');
-                
-                // Register the CSV data as a file in DuckDB's virtual filesystem
-                await db.registerFileText('traffic_data.csv', csvText);
-                
-                // Create table from the CSV file
-                await conn.query(`
-                    CREATE TABLE traffic_data AS 
-                    SELECT * FROM read_csv_auto('traffic_data.csv', header=true)
-                `);
-
-                // Get table info
-                const infoResult = await conn.query('DESCRIBE traffic_data');
-                console.log('Table structure:', infoResult.toArray());                // Clean and rename columns
-                let sql = `
-                    CREATE OR REPLACE TABLE traffic_data_clean AS
-                    SELECT 
-                        "${datetimeCol}"::TIMESTAMP AS datetime,
-                        "${countCol}"::INTEGER AS traffic_count
-                `;                if (directionCol) {
-                    sql += `, "${directionCol}" AS direction`;
-                }
-
-                // Add coverage column if it exists
-                const columns = infoResult.toArray().map(row => row.column_name);
-                if (columns.includes('Coverage %')) {
-                    sql += ', "Coverage %"::INTEGER AS coverage_pct';
-                }
-
-                sql += ' FROM traffic_data';
-
-                await conn.query(sql);
-
-                // Filter for 100% coverage if column exists
-                if (columns.includes('Coverage %')) {
-                    await conn.query('DELETE FROM traffic_data_clean WHERE coverage_pct != 100');
-                }                // Add date and time components (one column at a time)
-                await conn.query(`ALTER TABLE traffic_data_clean ADD COLUMN date_only DATE`);
-                await conn.query(`ALTER TABLE traffic_data_clean ADD COLUMN day_of_week INTEGER`);
-                await conn.query(`ALTER TABLE traffic_data_clean ADD COLUMN hour INTEGER`);
-                await conn.query(`ALTER TABLE traffic_data_clean ADD COLUMN year INTEGER`);
-                await conn.query(`ALTER TABLE traffic_data_clean ADD COLUMN month INTEGER`);
-
-                await conn.query(`
-                    UPDATE traffic_data_clean SET 
-                        date_only = datetime::DATE,
-                        day_of_week = EXTRACT(DOW FROM datetime),
-                        hour = EXTRACT(HOUR FROM datetime),
-                        year = EXTRACT(YEAR FROM datetime),
-                        month = EXTRACT(MONTH FROM datetime)
-                `);
-
-                // Filter out holidays if requested
-                let excludedDates = [];
-                if (excludeHolidays) {
-                    const restrictionDatesList = restrictionDates.map(d => `'${d}'`).join(',');
-                    await conn.query(`
-                        DELETE FROM traffic_data_clean 
-                        WHERE date_only IN (${restrictionDatesList})
-                    `);
-                    excludedDates = restrictionDates;
-                }                // Filter for midweek days (Tuesday=2, Wednesday=3, Thursday=4 in DuckDB DOW)
-                await conn.query(`
-                    DELETE FROM traffic_data_clean 
-                    WHERE day_of_week NOT IN (2, 3, 4)
-                `);                // Check if we have data
-                const countResult = await conn.query('SELECT COUNT(*) as count FROM traffic_data_clean');
-                const rowCount = countResult.toArray()[0].count;
-                
-                if (rowCount === 0) {
-                    throw new Error('No midweek data found after filtering');
-                }console.log(`Processing ${rowCount} rows of midweek traffic data`);
-
-                let results;
-                if (aggregateDirections || !directionCol) {
-                    results = await processAggregatedData();
-                } else {
-                    results = await processDirectionalData();
-                }                displayResults(results, !aggregateDirections && directionCol);
-                displayExcludedDates(excludedDates);
-                
-                // Build success message
-                showSuccess('Data processed successfully with DuckDB!');
-
-            } catch (error) {
-                console.error('Error in processCsvData:', error);
-                showError('Error processing data: ' + error.message);
-            } finally {
-                hideLoading();
-            }        }        async function processAggregatedData() {
-            console.log('Processing aggregated data by month...');
-            
-            // First, aggregate by datetime/hour/date if multiple directions exist (sum across directions)
+        // Step 4: Apply holiday exclusions
+        await updateProgressStep('step-holidays', 'active');
+        let excludedDates = [];
+        if (excludeHolidays) {
+            const restrictionDatesList = restrictionDates.map(d => `'${d}'`).join(',');
             await conn.query(`
-                CREATE OR REPLACE TABLE traffic_aggregated AS
-                SELECT 
-                    datetime, hour, date_only, year, month,
-                    SUM(traffic_count) as traffic_count
-                FROM traffic_data_clean
-                GROUP BY datetime, hour, date_only, year, month
-            `);
+                DELETE FROM traffic_data_clean 
+                WHERE date_only IN (${restrictionDatesList})                    `);
+            excludedDates = restrictionDates;
+            await updateProgressStep('step-holidays', 'completed', `Excluded ${restrictionDates.length} holiday dates`);
+        } else {
+            await updateProgressStep('step-holidays', 'completed', 'Holiday exclusion skipped');
+        }                // Step 5: Filter for selected days of week
+        await updateProgressStep('step-midweek', 'active');
+        
+        // Create day names for display
+        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+        const selectedDayNames = selectedDays.map(day => dayNames[day]).join(', ');
+        
+        // Build the SQL query with selected days
+        const selectedDaysStr = selectedDays.join(',');
+        await conn.query(`
+            DELETE FROM traffic_data_clean 
+            WHERE day_of_week NOT IN (${selectedDaysStr})
+        `);
 
-            // Calculate hourly statistics for monthly grouping
-            const result = await conn.query(`
-                SELECT 
-                    year, month,
-                    SUM(hourly_mean) as daily_average,
-                    SQRT(SUM(hourly_variance_per_count)) as standard_error
-                FROM (
-                    SELECT 
-                        year, month,
-                        hour,
-                        AVG(traffic_count) as hourly_mean,
-                        VARIANCE(traffic_count) / COUNT(traffic_count) as hourly_variance_per_count
-                    FROM traffic_aggregated
-                    GROUP BY year, month, hour
-                ) hourly_stats
-                GROUP BY year, month
-                ORDER BY year, month
-            `);
-
-            return formatResults(result.toArray(), false);
-        }        async function processDirectionalData() {
-            console.log('Processing directional data by month...');
-            
-            // Calculate hourly statistics by direction for monthly grouping
-            const result = await conn.query(`
-                SELECT 
-                    year, month, direction,
-                    SUM(hourly_mean) as daily_average,
-                    SQRT(SUM(hourly_variance_per_count)) as standard_error
-                FROM (
-                    SELECT 
-                        year, month, direction,
-                        hour,
-                        AVG(traffic_count) as hourly_mean,
-                        VARIANCE(traffic_count) / COUNT(traffic_count) as hourly_variance_per_count
-                    FROM traffic_data_clean
-                    GROUP BY year, month, direction, hour
-                ) hourly_stats
-                GROUP BY year, month, direction
-                ORDER BY year, month, direction
-            `);
-
-            return formatResults(result.toArray(), true);
-        }        function formatResults(data, includeDirection = false) {
-            // Monthly formatting only
-            const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
-                              'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            
-            return data.map(row => {
-                const monthName = `${monthNames[row.month - 1]} '${row.year.toString().slice(-2)}`;
-                const result = {
-                    month: monthName,
-                    daily_average: Math.round(row.daily_average),
-                    se: Math.round(row.standard_error || 0),
-                    period: `${row.year}-${row.month.toString().padStart(2, '0')}`
-                };
-                
-                if (includeDirection) {
-                    result.direction = row.direction;
-                }
-                
-                return result;
-            });
-        }        function displayResults(results, separateDirections) {
-            console.log('Displaying results:', results);
-            
-            if (!resultsBody) {
-                console.error('Results elements not found');
-                showError('Application error: Results display not available');
-                return;
-            }
-            
-            resultsBody.innerHTML = '';
-            
-            if (!results || !Array.isArray(results) || results.length === 0) {
-                console.error('No results to display');
-                showError('No results to display');
-                return;
-            }            // Update table header
-            const tableHead = document.getElementById('resultsTableHead');
-            
-            if (separateDirections) {
-                tableHead.innerHTML = `<tr><th>Month</th><th>Direction</th><th>Daily Average Traffic</th><th>Margin of Error +/-</th><th>YoY Change (%)</th></tr>`;
-            } else {
-                tableHead.innerHTML = `<tr><th>Month</th><th>Daily Average Traffic</th><th>Margin of Error +/-</th><th>YoY Change (%)</th></tr>`;
-            }
-
-            // Build a lookup for YoY calculation
-            const monthLookup = {};
-            results.forEach(r => {
-                if (r.period) {
-                    const key = separateDirections ? `${r.period}_${r.direction}` : r.period;
-                    monthLookup[key] = r.daily_average;
-                }
-            });
-
-            results.forEach(result => {
-                const row = document.createElement('tr');
-                const dailyAvg = typeof result.daily_average === 'number' 
-                    ? Math.round(result.daily_average).toLocaleString() : 'N/A';
-                const margin = result.se !== undefined ? Math.round(result.se).toLocaleString() : 'N/A';
-                
-                // Calculate YoY change
-                let yoy = '—';
-                if (result.period) {
-                    const currentKey = separateDirections ? `${result.period}_${result.direction}` : result.period;
-                    const prevYear = result.period.replace(/^(\d{4})/, (y) => (parseInt(y)-1).toString());
-                    const prevKey = separateDirections ? `${prevYear}_${result.direction}` : prevYear;
-                    
-                    if (monthLookup[prevKey] !== undefined && monthLookup[prevKey] !== 0) {
-                        const change = ((result.daily_average - monthLookup[prevKey]) / Math.abs(monthLookup[prevKey])) * 100;
-                        yoy = (change > 0 ? '+' : '') + Math.round(change) + '%';
-                    }
-                }
-                
-                if (separateDirections) {
-                    row.innerHTML = `
-                        <td>${result.month || 'Unknown'}</td>
-                        <td>${result.direction || 'Unknown'}</td>
-                        <td>${dailyAvg}</td>
-                        <td>${margin}</td>
-                        <td>${yoy}</td>
-                    `;
-                } else {
-                    row.innerHTML = `
-                        <td>${result.month || 'Unknown'}</td>
-                        <td>${dailyAvg}</td>
-                        <td>${margin}</td>
-                        <td>${yoy}</td>
-                    `;
-                }
-                resultsBody.appendChild(row);
-            });
-
-            plotResultsChart(results, !separateDirections);
-            
-            // Show the results section
-            const resultsSection = document.getElementById('resultsSection');
-            if (resultsSection) resultsSection.style.display = 'block';
+        // Check if we have data
+        const countResult = await conn.query('SELECT COUNT(*) as count FROM traffic_data_clean');
+        const rowCount = countResult.toArray()[0].count;
+        if (rowCount === 0) {
+            await updateProgressStep('step-midweek', 'error', `No data found for selected days (${selectedDayNames})`);
+            throw new Error(`No data found for selected days: ${selectedDayNames}`);
         }
+        await updateProgressStep('step-midweek', 'completed', `Found ${rowCount.toLocaleString()} records for ${selectedDayNames}`);
 
-        function plotResultsChart(results, aggregateDirections) {
-            const ctx = document.getElementById('resultsChart').getContext('2d');
-            if (chartInstance) {
-                chartInstance.destroy();
+        console.log(`Processing ${rowCount} rows of traffic data for selected days: ${selectedDayNames}`);
+
+        // Step 6: Calculate daily averages
+        await updateProgressStep('step-calculate', 'active');
+        let results;
+        if (aggregateDirections || !directionCol) {
+            results = await processAggregatedData();                } else {
+            results = await processDirectionalData();
+        }
+        await updateProgressStep('step-calculate', 'completed', `Calculated averages for ${results.length} periods`);                // Step 7: Generate results and charts
+        await updateProgressStep('step-display', 'active');
+        displayResults(results, !aggregateDirections && directionCol, selectedDays);
+        displayExcludedDates(excludedDates);
+        await updateProgressStep('step-display', 'completed');
+          // Complete all steps and show success
+        completeAllSteps();
+        
+        showSuccess('Data processed successfully with DuckDB!');
+
+    } catch (error) {
+        console.error('Error in processCsvData:', error);
+          // Mark current step as error and hide progress
+        const activeStep = document.querySelector('.progress-step.active');
+        if (activeStep) {
+            const stepId = activeStep.id;
+            updateProgressStep(stepId, 'error');
+        }
+        
+        showError('Error processing data: ' + error.message);
+    } finally {
+        hideLoading();
+    }
+}
+async function processAggregatedData() {
+    console.log('Processing aggregated data by month...');
+    
+    // First, aggregate by datetime/hour/date if multiple directions exist (sum across directions)
+    await conn.query(`
+        CREATE OR REPLACE TABLE traffic_aggregated AS
+        SELECT 
+            datetime, hour, date_only, year, month,
+            SUM(traffic_count) as traffic_count
+        FROM traffic_data_clean
+        GROUP BY datetime, hour, date_only, year, month
+    `);
+
+    // Calculate hourly statistics for monthly grouping
+    const result = await conn.query(`
+        SELECT 
+            year, month,
+            SUM(hourly_mean) as daily_average,
+            SQRT(SUM(hourly_variance_per_count)) as standard_error
+        FROM (
+            SELECT 
+                year, month,
+                hour,
+                AVG(traffic_count) as hourly_mean,
+                VARIANCE(traffic_count) / COUNT(traffic_count) as hourly_variance_per_count
+            FROM traffic_aggregated
+            GROUP BY year, month, hour
+        ) hourly_stats
+        GROUP BY year, month
+        ORDER BY year, month
+    `);
+
+    return formatResults(result.toArray(), false);
+}
+async function processDirectionalData() {
+    console.log('Processing directional data by month...');
+    
+    // Calculate hourly statistics by direction for monthly grouping
+    const result = await conn.query(`
+        SELECT 
+            year, month, direction,
+            SUM(hourly_mean) as daily_average,
+            SQRT(SUM(hourly_variance_per_count)) as standard_error
+        FROM (
+            SELECT 
+                year, month, direction,
+                hour,
+                AVG(traffic_count) as hourly_mean,
+                VARIANCE(traffic_count) / COUNT(traffic_count) as hourly_variance_per_count
+            FROM traffic_data_clean
+            GROUP BY year, month, direction, hour
+        ) hourly_stats
+        GROUP BY year, month, direction
+        ORDER BY year, month, direction
+    `);
+
+    return formatResults(result.toArray(), true);
+}
+function formatResults(data, includeDirection = false) {
+    // Monthly formatting only
+    const monthNames = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 
+                      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    
+    return data.map(row => {
+        const monthName = `${monthNames[row.month - 1]} '${row.year.toString().slice(-2)}`;
+        const result = {
+            month: monthName,
+            daily_average: Math.round(row.daily_average),
+            se: Math.round(row.standard_error || 0),
+            period: `${row.year}-${row.month.toString().padStart(2, '0')}`
+        };
+        
+        if (includeDirection) {
+            result.direction = row.direction;
+        }
+        
+        return result;
+    });
+}
+function displayResults(results, separateDirections, selectedDays) {
+    console.log('Displaying results:', results);
+    
+    if (!resultsBody) {
+        console.error('Results elements not found');
+        showError('Application error: Results display not available');
+        return;
+    }
+    
+    resultsBody.innerHTML = '';
+    
+    if (!results || !Array.isArray(results) || results.length === 0) {
+        console.error('No results to display');
+        showError('No results to display');
+        return;
+    }            // Update table header
+    const tableHead = document.getElementById('resultsTableHead');
+    
+    if (separateDirections) {
+        tableHead.innerHTML = `<tr><th>Month</th><th>Direction</th><th>Daily Average Traffic</th><th>Margin of Error +/-</th><th>YoY Change (%)</th></tr>`;
+    } else {
+        tableHead.innerHTML = `<tr><th>Month</th><th>Daily Average Traffic</th><th>Margin of Error +/-</th><th>YoY Change (%)</th></tr>`;
+    }
+
+    // Build a lookup for YoY calculation
+    const monthLookup = {};
+    results.forEach(r => {
+        if (r.period) {
+            const key = separateDirections ? `${r.period}_${r.direction}` : r.period;
+            monthLookup[key] = r.daily_average;
+        }
+    });
+
+    results.forEach(result => {
+        const row = document.createElement('tr');
+        const dailyAvg = typeof result.daily_average === 'number' 
+            ? Math.round(result.daily_average).toLocaleString() : 'N/A';
+        const margin = result.se !== undefined ? Math.round(result.se).toLocaleString() : 'N/A';
+        
+        // Calculate YoY change
+        let yoy = '—';
+        if (result.period) {
+            const currentKey = separateDirections ? `${result.period}_${result.direction}` : result.period;
+            const prevYear = result.period.replace(/^(\d{4})/, (y) => (parseInt(y)-1).toString());
+            const prevKey = separateDirections ? `${prevYear}_${result.direction}` : prevYear;
+            
+            if (monthLookup[prevKey] !== undefined && monthLookup[prevKey] !== 0) {
+                const change = ((result.daily_average - monthLookup[prevKey]) / Math.abs(monthLookup[prevKey])) * 100;
+                yoy = (change > 0 ? '+' : '') + Math.round(change) + '%';
             }
-            if (!results || results.length === 0) return;
+        }
+        
+        if (separateDirections) {
+            row.innerHTML = `
+                <td>${result.month || 'Unknown'}</td>
+                <td>${result.direction || 'Unknown'}</td>
+                <td>${dailyAvg}</td>
+                <td>${margin}</td>
+                <td>${yoy}</td>
+            `;
+        } else {
+            row.innerHTML = `
+                <td>${result.month || 'Unknown'}</td>
+                <td>${dailyAvg}</td>
+                <td>${margin}</td>
+                <td>${yoy}</td>
+            `;
+        }
+        resultsBody.appendChild(row);
+    });
 
-            // Color scheme
-            const primaryColor = '#254D70';
-            const secondaryColor = '#954C2E';
-            const axisColor = '#131D4F';
-            const gridColor = 'rgba(37,77,112,0.08)';
+    plotResultsChart(results, !separateDirections, selectedDays);
+    
+    // Show the results section
+    const resultsSection = document.getElementById('resultsSection');
+    if (resultsSection) resultsSection.style.display = 'block';
+}
+function plotResultsChart(results, aggregateDirections, selectedDays) {
+    const ctx = document.getElementById('resultsChart').getContext('2d');
+    if (chartInstance) {
+        chartInstance.destroy();
+    }
+    if (!results || results.length === 0) return;            // Color scheme
+    const primaryColor = '#254D70';
+    const secondaryColor = '#954C2E';
+    const axisColor = '#131D4F';
+    const gridColor = 'rgba(37,77,112,0.08)';
 
-            // Common chart options
-            const commonOptions = {
-                responsive: true,
-                maintainAspectRatio: false,
-                plugins: {
-                    legend: {
-                        position: 'top',
-                        labels: {
-                            padding: 20,
-                            usePointStyle: true,
-                            pointStyle: 'circle',
-                            color: axisColor,
-                            font: { size: 13, weight: 'bold' }
+    // Generate subtitle based on selected days
+    const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+    const selectedDayNames = selectedDays.map(day => dayNames[day]);
+    let subtitleText = '';
+    if (selectedDayNames.length === 7) {
+        subtitleText = 'All days of the week';
+    } else if (selectedDayNames.length === 5 && !selectedDayNames.includes('Saturday') && !selectedDayNames.includes('Sunday')) {
+        subtitleText = 'Weekdays only';
+    } else if (selectedDayNames.length === 2 && selectedDayNames.includes('Saturday') && selectedDayNames.includes('Sunday')) {
+        subtitleText = 'Weekends only';
+    } else if (selectedDayNames.length === 3 && selectedDayNames.includes('Tuesday') && selectedDayNames.includes('Wednesday') && selectedDayNames.includes('Thursday')) {
+        subtitleText = 'Midweek days only';
+    } else {
+        subtitleText = selectedDayNames.join(', ') + ' only';
+    }
+
+    // Common chart options
+    const commonOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                position: 'top',
+                labels: {
+                    padding: 20,
+                    usePointStyle: true,
+                    pointStyle: 'circle',
+                    color: axisColor,
+                    font: { size: 13, weight: 'bold' }
+                }
+            },
+            tooltip: {
+                backgroundColor: primaryColor,
+                titleColor: '#fff',
+                bodyColor: '#fff',
+                borderColor: secondaryColor,
+                borderWidth: 1,
+                padding: 12,
+                titleFont: { size: 14, weight: 'bold' },
+                bodyFont: { size: 13 },
+                callbacks: {
+                    label: function(context) {
+                        let label = context.dataset.label || '';
+                        if (label) {
+                            label += ': ';
                         }
-                    },
-                    tooltip: {
-                        backgroundColor: primaryColor,
-                        titleColor: '#fff',
-                        bodyColor: '#fff',
-                        borderColor: secondaryColor,
-                        borderWidth: 1,
-                        padding: 12,
-                        titleFont: { size: 14, weight: 'bold' },
-                        bodyFont: { size: 13 },
-                        callbacks: {
-                            label: function(context) {
-                                let label = context.dataset.label || '';
-                                if (label) {
-                                    label += ': ';
-                                }
-                                if (context.parsed.y !== null) {
-                                    label += new Intl.NumberFormat().format(context.parsed.y);
-                                }
-                                return label;
-                            }
+                        if (context.parsed.y !== null) {
+                            label += new Intl.NumberFormat().format(context.parsed.y);
                         }
+                        return label;
                     }
+                }
+            }
+        },
+        scales: {
+            y: {
+                beginAtZero: true,
+                grid: { color: gridColor, drawBorder: false },
+                ticks: {
+                    color: axisColor,
+                    callback: function(value) {
+                        return new Intl.NumberFormat().format(value);
+                    },
+                    padding: 10,
+                    font: { size: 12 }
                 },
-                scales: {
-                    y: {
-                        beginAtZero: true,
-                        grid: { color: gridColor, drawBorder: false },
-                        ticks: {
-                            color: axisColor,
-                            callback: function(value) {
-                                return new Intl.NumberFormat().format(value);
-                            },
-                            padding: 10,
-                            font: { size: 12 }
-                        },
-                        title: {
-                            display: true,
-                            text: 'Daily Average Traffic',
-                            color: axisColor,
-                            padding: {top: 10, bottom: 10},
-                            font: { size: 13, weight: 'bold' }
-                        }
-                    },
-                    x: {
-                        grid: { display: false },
-                        ticks: {
-                            color: axisColor,
-                            padding: 10,
-                            font: { size: 12 }
-                        }
-                    }
-                },
-                layout: {
-                    padding: { top: 20, right: 20, bottom: 20, left: 20 }
+                title: {
+                    display: true,
+                    text: 'Daily Average Traffic',
+                    color: axisColor,
+                    padding: {top: 10, bottom: 10},
+                    font: { size: 13, weight: 'bold' }
                 }
-            };
+            },
+            x: {
+                grid: { display: false },
+                ticks: {
+                    color: axisColor,
+                    padding: 10,
+                    font: { size: 12 }
+                }
+            }
+        },
+        layout: {
+            padding: { top: 20, right: 20, bottom: 20, left: 20 }
+        }
+    };
 
-            if (aggregateDirections) {
-                // Single bar chart
-                const labels = results.map(r => r.month);
-                const data = results.map(r => r.daily_average);
-                
-                chartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: labels,
-                        datasets: [{
-                            label: 'Daily Average Traffic',
-                            data: data,
-                            backgroundColor: primaryColor,
-                            borderColor: primaryColor,
-                            borderWidth: 1,
-                            borderRadius: 4,
-                            barPercentage: 0.7,
-                            categoryPercentage: 0.8
-                        }]
+    if (aggregateDirections) {
+        // Single bar chart
+        const labels = results.map(r => r.month);
+        const data = results.map(r => r.daily_average);
+        
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: [{
+                    label: 'Daily Average Traffic',
+                    data: data,
+                    backgroundColor: primaryColor,
+                    borderColor: primaryColor,
+                    borderWidth: 1,
+                    borderRadius: 4,
+                    barPercentage: 0.7,
+                    categoryPercentage: 0.8
+                }]
+            },
+            options: {
+                ...commonOptions,                        plugins: {
+                    ...commonOptions.plugins,                            legend: { display: false },                            title: {
+                        display: true,
+                        text: 'Monthly Daily Average Traffic',
+                        color: axisColor,
+                        padding: {top: 10, bottom: 4},
+                        font: { size: 16, weight: 'bold' }
                     },
-                    options: {
-                        ...commonOptions,                        plugins: {
-                            ...commonOptions.plugins,
-                            legend: { display: false },                            title: {
-                                display: true,
-                                text: 'Monthly Daily Average Traffic',
-                                color: axisColor,
-                                padding: {top: 10, bottom: 4},
-                                font: { size: 16, weight: 'bold' }
-                            },
-                            subtitle: {
-                                display: true,
-                                text: 'Processed with DuckDB WebAssembly - Midweek days only',
-                                color: secondaryColor,
-                                padding: {top: 0, bottom: 12},
-                                font: { size: 13, style: 'italic', weight: 'normal' }
-                            }
-                        }
+                    subtitle: {
+                        display: true,
+                        text: subtitleText,
+                        color: secondaryColor,
+                        padding: {top: 0, bottom: 12},
+                        font: { size: 13, style: 'italic', weight: 'normal' }
                     }
-                });
-            } else {
-                // Grouped bar chart
-                const monthsRaw = [...new Set(results.map(r => r.month))];
-                const directions = [...new Set(results.map(r => r.direction))];
-                
-                const baseColors = [primaryColor, secondaryColor];
-                const datasets = directions.map((dir, i) => {
-                    const color = baseColors[i % baseColors.length];
-                    return {
-                        label: dir,
-                        data: monthsRaw.map(m => {
-                            const found = results.find(r => r.month === m && r.direction === dir);
-                            return found ? found.daily_average : 0;
-                        }),
-                        backgroundColor: color,
-                        borderColor: color,
-                        borderWidth: 1,
-                        borderRadius: 4,
-                        barPercentage: 0.8,
-                        categoryPercentage: 0.9
-                    };
-                });
-
-                chartInstance = new Chart(ctx, {
-                    type: 'bar',
-                    data: {
-                        labels: monthsRaw,
-                        datasets: datasets
-                    },
-                    options: {
-                        ...commonOptions,                        plugins: {
-                            ...commonOptions.plugins,                            title: {
-                                display: true,
-                                text: 'Monthly Daily Average Traffic by Direction',
-                                color: axisColor,
-                                padding: {top: 10, bottom: 4},
-                                font: { size: 16, weight: 'bold' }
-                            },
-                            subtitle: {
-                                display: true,
-                                text: 'Processed with DuckDB WebAssembly - Midweek days only',
-                                color: secondaryColor,
-                                padding: {top: 0, bottom: 12},
-                                font: { size: 13, style: 'italic', weight: 'normal' }
-                            }
-                        }
-                    }
-                });
-            }
-        }
-
-        function showLoading() {
-            if (loading) {
-                loading.style.display = 'block';
-            }
-        }
-
-        function hideLoading() {
-            if (loading) {
-                loading.style.display = 'none';
-            }
-        }
-
-        function showError(message) {
-            console.error('Error:', message);
-            if (errorMessage) {
-                errorMessage.textContent = message;
-                errorMessage.style.display = 'block';
-            }
-            if (successMessage) {
-                successMessage.style.display = 'none';
-            }
-        }
-
-        function showSuccess(message) {
-            console.log('Success:', message);
-            if (successMessage) {
-                successMessage.textContent = message;
-                successMessage.style.display = 'block';
-            }
-            if (errorMessage) {
-                errorMessage.style.display = 'none';
-            }
-        }
-
-        function hideMessages() {
-            if (errorMessage) errorMessage.style.display = 'none';
-            if (successMessage) successMessage.style.display = 'none';
-        }
-
-        function displayExcludedDates(dates) {
-            const box = document.getElementById('excludedDatesBox');
-            const content = document.getElementById('excludedDatesContent');
-            
-            if (dates && Array.isArray(dates) && dates.length > 0) {
-                box.style.display = 'block';
-                
-                // Group dates by year and month
-                const groupedDates = dates.reduce((acc, dateStr) => {
-                    const date = new Date(dateStr);
-                    const year = date.getFullYear();
-                    const month = date.getMonth();
-                    
-                    if (!acc[year]) acc[year] = {};
-                    if (!acc[year][month]) acc[year][month] = [];
-                    acc[year][month].push(date);
-                    return acc;
-                }, {});
-                
-                // Generate HTML (same as original)
-                const years = Object.keys(groupedDates).sort((a, b) => b - a);
-                let html = '';
-                years.forEach(year => {
-                    html += `<div class="excluded-year"><h6>${year}</h6>`;
-                    const months = Object.keys(groupedDates[year]).sort((a, b) => b - a);
-                    months.forEach(month => {
-                        const monthDates = groupedDates[year][month].sort((a, b) => a - b);
-                        const monthName = monthDates[0].toLocaleString('default', { month: 'long' });
-                        
-                        const ranges = [];
-                        let start = monthDates[0];
-                        let prev = monthDates[0];
-                        
-                        for (let i = 1; i <= monthDates.length; i++) {
-                            const curr = monthDates[i];
-                            if (!curr || curr.getTime() - prev.getTime() > 86400000) {
-                                ranges.push({ start: start, end: prev });
-                                start = curr;
-                            }
-                            prev = curr;
-                        }
-                        
-                        html += `<div class="excluded-month">
-                            <span class="month-name">${monthName}:</span>
-                            <span class="excluded-dates">`;
-                        
-                        ranges.forEach((range, i) => {
-                            const startStr = range.start.getDate();
-                            const endStr = range.end.getDate();
-                            html += `<span class="date-range">${startStr === endStr ? 
-                                startStr : `${startStr}–${endStr}`}</span>`;
-                        });
-                        
-                        html += `</span></div>`;
-                    });
-                    html += `</div>`;
-                });
-                
-                content.innerHTML = html;
-            } else {
-                box.style.display = 'none';
-                content.innerHTML = '';
-            }
-        }
-
-        // Export chart functionality
-        document.addEventListener('DOMContentLoaded', function() {
-            const exportBtn = document.getElementById('exportChartBtn');
-            if (exportBtn) {
-                exportBtn.addEventListener('click', function() {
-                    if (chartInstance) {
-                        const url = chartInstance.toBase64Image();
-                        const link = document.createElement('a');
-                        link.href = url;
-                        link.download = 'traffic_chart_duckdb.png';
-                        document.body.appendChild(link);
-                        link.click();
-                        document.body.removeChild(link);
-                    }
-                });
+                }
             }
         });
+    } else {
+        // Grouped bar chart
+        const monthsRaw = [...new Set(results.map(r => r.month))];
+        const directions = [...new Set(results.map(r => r.direction))];
+        
+        const baseColors = [primaryColor, secondaryColor];
+        const datasets = directions.map((dir, i) => {
+            const color = baseColors[i % baseColors.length];
+            return {
+                label: dir,
+                data: monthsRaw.map(m => {
+                    const found = results.find(r => r.month === m && r.direction === dir);
+                    return found ? found.daily_average : 0;
+                }),
+                backgroundColor: color,
+                borderColor: color,
+                borderWidth: 1,
+                borderRadius: 4,
+                barPercentage: 0.8,
+                categoryPercentage: 0.9
+            };
+        });
+
+        chartInstance = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: monthsRaw,
+                datasets: datasets
+            },
+                options: {
+                    ...commonOptions,
+                    plugins: {
+                        ...commonOptions.plugins,
+                        title: {
+                            display: true,
+                            text: 'Monthly Daily Average Traffic by Direction',
+                            color: axisColor,
+                            padding: {top: 10, bottom: 4},
+                            font: { size: 16, weight: 'bold' }
+                        },
+                        subtitle: {
+                            display: true,
+                            text: subtitleText,
+                            color: secondaryColor,
+                            padding: {top: 0, bottom: 12},
+                            font: { size: 13, style: 'italic', weight: 'normal' }
+                        }
+                    }
+                }
+            });
+    }
+}
+
+// --------- 9. UI Feedback & Progress ---------
+function showLoading() {
+    if (loading) {
+        loading.style.display = 'block';
+    }
+}
+function hideLoading() {
+    if (loading) {
+        loading.style.display = 'none';
+    }
+}
+function showError(message) {
+    console.error('Error:', message);
+    if (errorMessage) {
+        errorMessage.textContent = message;
+        errorMessage.style.display = 'block';
+    }
+    if (successMessage) {
+        successMessage.style.display = 'none';
+    }
+}
+function showSuccess(message) {
+    console.log('Success:', message);
+    if (successMessage) {
+        successMessage.textContent = message;
+        successMessage.style.display = 'block';
+    }
+    if (errorMessage) {
+        errorMessage.style.display = 'none';
+    }
+}        function hideMessages() {
+    if (errorMessage) errorMessage.style.display = 'none';
+    if (successMessage) successMessage.style.display = 'none';
+}
+function showProgress() {
+    const progressIndicator = document.getElementById('progressIndicator');
+    if (progressIndicator) {
+        progressIndicator.style.display = 'block';
+        // Reset all steps to initial status
+        const steps = progressIndicator.querySelectorAll('.progress-step');
+        steps.forEach(step => {
+            step.classList.remove('active', 'completed', 'error');
+            const icon = step.querySelector('.progress-step-icon i');
+            icon.className = 'fas fa-circle-notch';
+        });
+    }
+}
+function hideProgress() {
+    const progressIndicator = document.getElementById('progressIndicator');
+    if (progressIndicator) {
+        progressIndicator.style.display = 'none';
+    }
+}
+function updateProgressStep(stepId, status, message = null) {
+    const step = document.getElementById(stepId);
+    if (!step) return;
+
+    // Remove previous status classes
+    step.classList.remove('active', 'completed', 'error');
+    
+    // Add new status class
+    step.classList.add(status);
+    
+    // Update icon based on status
+    const icon = step.querySelector('.progress-step-icon i');
+    switch (status) {
+        case 'active':
+            icon.className = 'fas fa-spinner fa-spin';
+            break;
+        case 'completed':
+            icon.className = 'fas fa-check';
+            break;
+        case 'error':
+            icon.className = 'fas fa-exclamation-triangle';
+            break;
+        default:
+            icon.className = 'fas fa-circle-notch';
+    }
+    
+    // Update text if message provided
+    if (message) {
+        const textElement = step.querySelector('.progress-step-text');
+        textElement.textContent = message;
+    }
+
+    // Add a small delay to ensure UI updates are visible
+    return new Promise(resolve => setTimeout(resolve, 200));
+}
+function completeAllSteps() {
+    const steps = ['step-init', 'step-load', 'step-clean', 'step-holidays', 'step-midweek', 'step-calculate', 'step-display'];
+    steps.forEach(stepId => {
+        updateProgressStep(stepId, 'completed');
+    });
+}
+
+// --------- 10. Excluded Dates Display ---------
+function displayExcludedDates(dates) {
+    const box = document.getElementById('excludedDatesBox');
+    const content = document.getElementById('excludedDatesContent');
+    
+    if (dates && Array.isArray(dates) && dates.length > 0) {
+        box.style.display = 'block';
+        
+        // Group dates by year and month
+        const groupedDates = dates.reduce((acc, dateStr) => {
+            const date = new Date(dateStr);
+            const year = date.getFullYear();
+            const month = date.getMonth();
+            
+            if (!acc[year]) acc[year] = {};
+            if (!acc[year][month]) acc[year][month] = [];
+            acc[year][month].push(date);
+            return acc;
+        }, {});
+        
+        // Generate HTML (same as original)
+        const years = Object.keys(groupedDates).sort((a, b) => b - a);
+        let html = '';
+        years.forEach(year => {
+            html += `<div class="excluded-year"><h6>${year}</h6>`;
+            const months = Object.keys(groupedDates[year]).sort((a, b) => b - a);
+            months.forEach(month => {
+                const monthDates = groupedDates[year][month].sort((a, b) => a - b);
+                const monthName = monthDates[0].toLocaleString('default', { month: 'long' });
+                
+                const ranges = [];
+                let start = monthDates[0];
+                let prev = monthDates[0];
+                
+                for (let i = 1; i <= monthDates.length; i++) {
+                    const curr = monthDates[i];
+                    if (!curr || curr.getTime() - prev.getTime() > 86400000) {
+                        ranges.push({ start: start, end: prev });
+                        start = curr;
+                    }
+                    prev = curr;
+                }
+                
+                html += `<div class="excluded-month">
+                    <span class="month-name">${monthName}:</span>
+                    <span class="excluded-dates">`;
+                
+                ranges.forEach((range, i) => {
+                    const startStr = range.start.getDate();
+                    const endStr = range.end.getDate();
+                    html += `<span class="date-range">${startStr === endStr ? 
+                        startStr : `${startStr}–${endStr}`}</span>`;
+                });
+                
+                html += `</span></div>`;
+            });
+            html += `</div>`;
+        });
+        
+        content.innerHTML = html;
+    } else {
+        box.style.display = 'none';
+        content.innerHTML = '';
+    }
+}
+
+// --------- 11. Chart Export Functionality ---------
+document.addEventListener('DOMContentLoaded', function() {
+    const exportBtn = document.getElementById('exportChartBtn');
+    if (exportBtn) {
+        exportBtn.addEventListener('click', function() {
+            if (chartInstance) {
+                const url = chartInstance.toBase64Image();
+                const link = document.createElement('a');
+                link.href = url;
+                link.download = 'traffic_chart_duckdb.png';
+                document.body.appendChild(link);
+                link.click();
+                document.body.removeChild(link);
+            }
+        });
+    }
+});
     </script>
 </body>
 </html>
