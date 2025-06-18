@@ -15,17 +15,15 @@
                 <i class="fas fa-chart-bar"></i>
                 Daily Average Traffic Calculator
             </h1>
-            <p>Calculate monthly daily average traffic from your CSV data with customizable day filtering</p>
+            <p>Calculate daily average traffic from your CSV data</p>
         </header>
         
-        <section class="section-block mb-4">
-            <div class="section-header">Upload & Configure</div>
-            
-            <div class="progress" id="csvUploadProgressBar" style="height: 18px; display: none; margin-bottom: 1rem;">
-              <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
+        <section class="section-block mb-4" style="background: #fff; border: 1.5px solid #254D70; border-radius: 12px;">
+            <div class="section-title-flat">
+                <i class="fas fa-cog me-2"></i>Upload & Configure
             </div>
-            
-            <div class="upload-area" id="uploadArea">
+            <!-- File Upload -->
+            <div class="upload-area mb-3" id="uploadArea">
                 <i class="fas fa-cloud-upload-alt"></i>
                 <h5 class="mb-2">Drag & Drop your CSV file here</h5>
                 <p class="text-muted mb-2">or</p>
@@ -34,146 +32,108 @@
                     Choose File
                 </button>
             </div>
-            <div class="text-center mb-2">
-                <p class="mb-2">or paste your CSV data below:</p>
-                <textarea id="csvData" class="form-control" rows="5" 
-                          placeholder="Paste your CSV data here (datetime,traffic_count)"></textarea>
+            <div id="csvUploadProgressBar" class="progress" style="height: 18px; display: none; margin-bottom: 1rem;">
+                <div class="progress-bar" role="progressbar" style="width: 0%;" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">0%</div>
             </div>
-            <div class="mt-3" id="previewArea" style="display:none;">
-                <label class="form-label"><strong>Preview:</strong></label>
-                <pre id="csvPreview" style="background:#f1f3f4;padding:1em;border-radius:8px;max-height:200px;overflow:auto;"></pre>
-            </div>            <div class="form-check mt-3 mb-2">
-                <input class="form-check-input" type="checkbox" value="1" id="aggregateDirections" checked>
-                <label class="form-check-label" for="aggregateDirections">
-                    Aggregate all directions
-                </label>
-            </div>            <div class="form-check mb-2">
-                <input class="form-check-input" type="checkbox" value="1" id="excludeHolidays" checked>
-                <label class="form-check-label" for="excludeHolidays">
-                    Exclude holidays/restriction dates
-                </label>
+            <!-- Uploaded file list will be injected here -->
+            <!-- Preview Area: shown after file upload, before configuration -->
+            <div id="previewArea" class="mb-3" style="display:none;">
+                <div class="section-title-flat sub">Preview</div>
+                <pre id="csvPreview" class="csv-preview-box"></pre>
             </div>
-            
-            <div class="mt-3 mb-3">
-                <label class="form-label"><strong>Select Days of Week to Include:</strong></label>
-                <div class="row g-2">
-                    <div class="col-md-6">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="0" id="daySunday">
-                            <label class="form-check-label" for="daySunday">Sunday</label>
+            <!-- Parameter Section: hidden until file is uploaded -->
+            <div id="parameterSection" style="display:none;">
+                <div class="section-title-flat"><i class="fas fa-sliders-h me-2"></i>Configuration</div>
+                <div class="mb-3" style="border-bottom: 1px solid #e3e3e3; padding-bottom: 0.7em;">
+                    <div class="row g-2 mt-2">
+                        <div class="col-md-4">
+                            <label for="datetimeCol" class="form-label">Datetime column</label>
+                            <select id="datetimeCol" class="form-select"></select>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="1" id="dayMonday">
-                            <label class="form-check-label" for="dayMonday">Monday</label>
+                        <div class="col-md-4">
+                            <label for="countCol" class="form-label">Traffic count column</label>
+                            <select id="countCol" class="form-select"></select>
                         </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="2" id="dayTuesday" checked>
-                            <label class="form-check-label" for="dayTuesday">Tuesday</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="3" id="dayWednesday" checked>
-                            <label class="form-check-label" for="dayWednesday">Wednesday</label>
-                        </div>
-                    </div>
-                    <div class="col-md-6">
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="4" id="dayThursday" checked>
-                            <label class="form-check-label" for="dayThursday">Thursday</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="5" id="dayFriday">
-                            <label class="form-check-label" for="dayFriday">Friday</label>
-                        </div>
-                        <div class="form-check">
-                            <input class="form-check-input" type="checkbox" value="6" id="daySaturday">
-                            <label class="form-check-label" for="daySaturday">Saturday</label>
-                        </div>
-                        <div class="mt-2">
-                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectAllDays()">Select All</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="selectMidweekDays()">Midweek Only</button>
-                            <button type="button" class="btn btn-outline-secondary btn-sm" onclick="clearAllDays()">Clear All</button>
+                        <div class="col-md-4">
+                            <label for="directionCol" class="form-label">Direction column (optional)</label>
+                            <select id="directionCol" class="form-select">
+                                <option value="">(None)</option>
+                            </select>
                         </div>
                     </div>
                 </div>
+                <div class="mb-3" style="border-bottom: 1px solid #e3e3e3; padding-bottom: 0.7em;">
+                    <div class="mt-2">
+                        <label class="me-4"><input type="checkbox" id="aggregateDirections" checked> Aggregate all directions</label>
+                        <label><input type="checkbox" id="excludeHolidays" checked> Exclude holidays/restriction dates</label>
+                    </div>
+                </div>
+                <div class="mb-3" style="border-bottom: 1px solid #e3e3e3; padding-bottom: 0.7em;">
+                    <div class="mt-2">
+                        <label class="me-3"><input type="radio" name="dayGroup" id="optWeekdays" checked> Weekdays</label>
+                        <label class="me-3"><input type="radio" name="dayGroup" id="optWeekends"> Weekends</label>
+                        <label><input type="radio" name="dayGroup" id="optMidweek"> Midweek</label>
+                    </div>
+                </div>
+                <button class="btn btn-primary w-100 mt-2 mb-2" onclick="processData()">
+                    <i class="fas fa-play me-1"></i> Process Data
+                </button>
+                <div class="loading-indicator">
+                    <div class="spinner-border" role="status">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <p class="mt-2">Processing data...</p>
+                </div>
+                <div class="progress-indicator" id="progressIndicator">
+                    <h6 class="mb-3" style="color: #254D70; font-weight: 600;">
+                        <i class="fas fa-cogs me-2"></i>Processing Steps
+                    </h6>
+                    <div class="progress-step" id="step-init">
+                        <div class="progress-step-icon">
+                            <i class="fas fa-circle-notch"></i>
+                        </div>
+                        <div class="progress-step-text">Initializing DuckDB database</div>
+                    </div>
+                    <div class="progress-step" id="step-load">
+                        <div class="progress-step-icon">
+                            <i class="fas fa-circle-notch"></i>
+                        </div>
+                        <div class="progress-step-text">Loading and parsing CSV data</div>
+                    </div>
+                    <div class="progress-step" id="step-clean">
+                        <div class="progress-step-icon">
+                            <i class="fas fa-circle-notch"></i>
+                        </div>
+                        <div class="progress-step-text">Cleaning and filtering data</div>
+                    </div>
+                    <div class="progress-step" id="step-holidays">
+                        <div class="progress-step-icon">
+                            <i class="fas fa-circle-notch"></i>
+                        </div>
+                        <div class="progress-step-text">Applying holiday exclusions</div>
+                    </div>
+                    <div class="progress-step" id="step-midweek">
+                        <div class="progress-step-icon">
+                            <i class="fas fa-circle-notch"></i>
+                        </div>
+                        <div class="progress-step-text">Filtering for selected days</div>
+                    </div>
+                    <div class="progress-step" id="step-calculate">
+                        <div class="progress-step-icon">
+                            <i class="fas fa-circle-notch"></i>
+                        </div>
+                        <div class="progress-step-text">Calculating daily averages</div>
+                    </div>
+                    <div class="progress-step" id="step-display">
+                        <div class="progress-step-icon">
+                            <i class="fas fa-circle-notch"></i>
+                        </div>
+                        <div class="progress-step-text">Generating results and charts</div>
+                    </div>
+                </div>
+                <div class="error-message alert" style="display:none;"></div>
+                <div class="success-message alert" style="display:none;"></div>
             </div>
-
-<div class="mt-3" id="mappingArea" style="display:none;">
-                <label class="form-label"><strong>Map Columns:</strong></label>                <div class="row g-2">
-                    <div class="col-md-6">
-                        <label for="datetimeCol" class="form-label">Datetime column</label>
-                        <select id="datetimeCol" class="form-select"></select>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="countCol" class="form-label">Traffic count column</label>
-                        <select id="countCol" class="form-select"></select>
-                    </div>
-                    <div class="col-md-12">
-                        <label for="directionCol" class="form-label">Direction column (optional)</label>
-                        <select id="directionCol" class="form-select">
-                            <option value="">(None)</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-            <button class="btn btn-success" onclick="processData()">
-                <i class="fas fa-play me-1"></i> Process Data
-            </button>
-              <div class="loading-indicator">
-                <div class="spinner-border" role="status">
-                    <span class="visually-hidden">Loading...</span>
-                </div>
-                <p class="mt-2">Processing data...</p>
-            </div>
-            
-            <div class="progress-indicator" id="progressIndicator">
-                <h6 class="mb-3" style="color: #254D70; font-weight: 600;">
-                    <i class="fas fa-cogs me-2"></i>Processing Steps
-                </h6>
-                <div class="progress-step" id="step-init">
-                    <div class="progress-step-icon">
-                        <i class="fas fa-circle-notch"></i>
-                    </div>
-                    <div class="progress-step-text">Initializing DuckDB database</div>
-                </div>
-                <div class="progress-step" id="step-load">
-                    <div class="progress-step-icon">
-                        <i class="fas fa-circle-notch"></i>
-                    </div>
-                    <div class="progress-step-text">Loading and parsing CSV data</div>
-                </div>
-                <div class="progress-step" id="step-clean">
-                    <div class="progress-step-icon">
-                        <i class="fas fa-circle-notch"></i>
-                    </div>
-                    <div class="progress-step-text">Cleaning and filtering data</div>
-                </div>
-                <div class="progress-step" id="step-holidays">
-                    <div class="progress-step-icon">
-                        <i class="fas fa-circle-notch"></i>
-                    </div>
-                    <div class="progress-step-text">Applying holiday exclusions</div>
-                </div>                <div class="progress-step" id="step-midweek">
-                    <div class="progress-step-icon">
-                        <i class="fas fa-circle-notch"></i>
-                    </div>
-                    <div class="progress-step-text">Filtering for selected days</div>
-                </div>
-                <div class="progress-step" id="step-calculate">
-                    <div class="progress-step-icon">
-                        <i class="fas fa-circle-notch"></i>
-                    </div>
-                    <div class="progress-step-text">Calculating daily averages</div>
-                </div>
-                <div class="progress-step" id="step-display">
-                    <div class="progress-step-icon">
-                        <i class="fas fa-circle-notch"></i>
-                    </div>
-                    <div class="progress-step-text">Generating results and charts</div>
-                </div>
-            </div>
-            
-            <div class="error-message alert" style="display:none;"></div>
-            <div class="success-message alert" style="display:none;"></div>
         </section>
         
         <section class="section-block" id="resultsSection" style="display:none;">
@@ -300,7 +260,6 @@ const restrictionDates = [
 // --------- 3. DOM Elements ---------
 const uploadArea = document.getElementById('uploadArea');
 const fileInput = document.getElementById('fileInput');
-const csvData = document.getElementById('csvData');
 const loading = document.querySelector('.loading-indicator');
 const errorMessage = document.querySelector('.error-message');
 const successMessage = document.querySelector('.success-message');
@@ -356,24 +315,23 @@ function handleDrop(e) {
 fileInput.addEventListener('change', handleFileChange);
 function handleFileChange() {
     if (fileInput.files.length > 0) {
-        csvData.value = '';
         previewCSVFiles(fileInput.files);
+        showUploadedFiles(fileInput.files);
+        document.getElementById('previewArea').style.display = '';
+        document.getElementById('parameterSection').style.display = '';
+    } else {
+        clearUploadedFiles();
+        document.getElementById('previewArea').style.display = 'none';
+        document.getElementById('parameterSection').style.display = 'none';
     }
 }
-csvData.addEventListener('input', function() {
-    if (this.value.trim() !== '') {
-        fileInput.value = '';
-        previewCSVText(this.value.trim());
-    } else {
-        clearPreview();
-    }
-});
 // Preview CSV files and show progress bar
 function previewCSVFiles(files) {
     if (!files || files.length === 0) { 
         clearPreview(); 
         clearMapping(); 
         if (csvUploadProgressBar) csvUploadProgressBar.style.display = 'none';
+        clearUploadedFiles();
         return; 
     }
     const readers = [];
@@ -434,6 +392,7 @@ function previewCSVText(text) {
     if (!text) { 
         clearPreview(); 
         clearMapping(); 
+        clearUploadedFiles();
         return; 
     }
     const lines = text.split(/\r?\n/).slice(0, 10); // Show first 10 lines
@@ -508,28 +467,7 @@ function autoSelectColumn(selectElem, keywords) {
     }
 }
 
-// --------- 7. Day Selection Helpers ---------
-window.selectAllDays = function() {
-    const dayCheckboxes = ['daySunday', 'dayMonday', 'dayTuesday', 'dayWednesday', 'dayThursday', 'dayFriday', 'daySaturday'];
-    dayCheckboxes.forEach(id => {
-        document.getElementById(id).checked = true;
-    });
-};
-window.selectMidweekDays = function() {
-    const dayCheckboxes = ['daySunday', 'dayMonday', 'dayTuesday', 'dayWednesday', 'dayThursday', 'dayFriday', 'daySaturday'];
-    const midweekDays = ['dayTuesday', 'dayWednesday', 'dayThursday'];
-    dayCheckboxes.forEach(id => {
-        document.getElementById(id).checked = midweekDays.includes(id);
-    });
-};
-window.clearAllDays = function() {
-    const dayCheckboxes = ['daySunday', 'dayMonday', 'dayTuesday', 'dayWednesday', 'dayThursday', 'dayFriday', 'daySaturday'];
-    dayCheckboxes.forEach(id => {
-        document.getElementById(id).checked = false;
-    });
-};
-
-// --------- 8. Main Data Processing Pipeline ---------
+// --------- 7. Main Data Processing Pipeline ---------
 window.processData = async function() {
     if (!db || !conn) {
         showError('DuckDB is not initialized yet. Please wait a moment and try again.');
@@ -540,16 +478,10 @@ window.processData = async function() {
         const excludeHolidays = document.getElementById('excludeHolidays').checked;
         
         // Get selected days of week
-        const selectedDays = [];
-        const dayCheckboxes = ['daySunday', 'dayMonday', 'dayTuesday', 'dayWednesday', 'dayThursday', 'dayFriday', 'daySaturday'];
-        dayCheckboxes.forEach((id, index) => {
-            if (document.getElementById(id).checked) {
-                selectedDays.push(index);
-            }
-        });
+        const selectedDays = getSelectedDays();
         
         if (selectedDays.length === 0) {
-            showError('Please select at least one day of the week to include');
+            showError('Please select a day group to include');
             return;
         }
         
@@ -590,8 +522,8 @@ window.processData = async function() {
                 reader.readAsText(fileInput.files[i]);
             }
             return;
-        } else if (csvData.value.trim()) {
-            csvText = csvData.value.trim();
+        } else if (csvText.trim()) {
+            csvText = csvText.trim();
         } else {
             showError('Please either upload a file or paste CSV data');
             return;
@@ -682,21 +614,25 @@ async function processCsvData(csvText, aggregateDirections, excludeHolidays, sel
         // Step 4: Apply holiday exclusions
         await updateProgressStep('step-holidays', 'active');
         let excludedDates = [];
+        let holidaysFilteredOut = 0;
         if (excludeHolidays) {
             const restrictionDatesList = restrictionDates.map(d => `'${d}'`).join(',');
+            // Count unique days before
+            const beforeDaysResult = await conn.query('SELECT COUNT(DISTINCT date_only) as days FROM traffic_data_clean');
+            const beforeDays = beforeDaysResult.toArray()[0].days;
             await conn.query(`
                 DELETE FROM traffic_data_clean 
                 WHERE date_only IN (${restrictionDatesList})                    `);
+            // Count unique days after
+            const afterDaysResult = await conn.query('SELECT COUNT(DISTINCT date_only) as days FROM traffic_data_clean');
+            const afterDays = afterDaysResult.toArray()[0].days;
+            holidaysFilteredOut = beforeDays - afterDays;
             excludedDates = restrictionDates;
-            await updateProgressStep('step-holidays', 'completed', `Excluded ${restrictionDates.length} holiday dates`);
+            await updateProgressStep('step-holidays', 'completed', `Filtered out ${holidaysFilteredOut.toLocaleString()} holidays`);
         } else {
             await updateProgressStep('step-holidays', 'completed', 'Holiday exclusion skipped');
         }                // Step 5: Filter for selected days of week
         await updateProgressStep('step-midweek', 'active');
-        
-        // Create day names for display
-        const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const selectedDayNames = selectedDays.map(day => dayNames[day]).join(', ');
         
         // Build the SQL query with selected days
         const selectedDaysStr = selectedDays.join(',');
@@ -709,12 +645,15 @@ async function processCsvData(csvText, aggregateDirections, excludeHolidays, sel
         const countResult = await conn.query('SELECT COUNT(*) as count FROM traffic_data_clean');
         const rowCount = countResult.toArray()[0].count;
         if (rowCount === 0) {
-            await updateProgressStep('step-midweek', 'error', `No data found for selected days (${selectedDayNames})`);
-            throw new Error(`No data found for selected days: ${selectedDayNames}`);
+            await updateProgressStep('step-midweek', 'error', `No data found for selected days (${selectedDays.join(', ')})`);
+            throw new Error(`No data found for selected days: ${selectedDays.join(', ')}`);
         }
-        await updateProgressStep('step-midweek', 'completed', `Found ${rowCount.toLocaleString()} records for ${selectedDayNames}`);
+        // Count unique days
+        const uniqueDaysResult = await conn.query('SELECT COUNT(DISTINCT date_only) as unique_days FROM traffic_data_clean');
+        const uniqueDays = uniqueDaysResult.toArray()[0].unique_days;
+        await updateProgressStep('step-midweek', 'completed', `Found ${uniqueDays.toLocaleString()} unique days for ${selectedDays.join(', ')}`);
 
-        console.log(`Processing ${rowCount} rows of traffic data for selected days: ${selectedDayNames}`);
+        console.log(`Processing ${rowCount} rows of traffic data for selected days: ${selectedDays.join(', ')}`);
 
         // Step 6: Calculate daily averages
         await updateProgressStep('step-calculate', 'active');
@@ -723,7 +662,7 @@ async function processCsvData(csvText, aggregateDirections, excludeHolidays, sel
             results = await processAggregatedData();                } else {
             results = await processDirectionalData();
         }
-        await updateProgressStep('step-calculate', 'completed', `Calculated averages for ${results.length} periods`);                // Step 7: Generate results and charts
+        await updateProgressStep('step-calculate', 'completed', `Calculated averages for ${results.length} months`);                // Step 7: Generate results and charts
         await updateProgressStep('step-display', 'active');
         displayResults(results, !aggregateDirections && directionCol, selectedDays);
         displayExcludedDates(excludedDates);
@@ -731,7 +670,7 @@ async function processCsvData(csvText, aggregateDirections, excludeHolidays, sel
           // Complete all steps and show success
         completeAllSteps();
         
-        showSuccess('Data processed successfully with DuckDB!');
+        showSuccess('Data processed successfully!');
 
     } catch (error) {
         console.error('Error in processCsvData:', error);
@@ -832,14 +771,6 @@ function displayResults(results, separateDirections, selectedDays) {
     if (!resultsBody) {
         console.error('Results elements not found');
         showError('Application error: Results display not available');
-        return;
-    }
-    
-    resultsBody.innerHTML = '';
-    
-    if (!results || !Array.isArray(results) || results.length === 0) {
-        console.error('No results to display');
-        showError('No results to display');
         return;
     }            // Update table header
     const tableHead = document.getElementById('resultsTableHead');
@@ -1272,6 +1203,57 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+// Show uploaded file names and actions
+function showUploadedFiles(files) {
+    clearUploadedFiles();
+    const area = document.getElementById('uploadArea');
+    let fileList = document.getElementById('uploadedFileList');
+    if (!fileList) {
+        fileList = document.createElement('div');
+        fileList.id = 'uploadedFileList';
+        fileList.className = 'mt-2';
+        area.parentNode.insertBefore(fileList, area.nextSibling);
+    }
+    let html = '<div class="alert alert-light d-flex align-items-center justify-content-between mb-2" style="border:1px solid #254D70; border-radius:7px;">';
+    html += '<div>';
+    for (let i = 0; i < files.length; i++) {
+        html += `<span class="badge bg-primary me-2">${files[i].name}</span>`;
+    }
+    html += '</div>';
+    html += '<div>';
+    html += '<button type="button" class="btn btn-outline-danger btn-sm me-2" onclick="removeUploadedFiles()"><i class="fas fa-trash"></i> Remove</button>';
+    html += '<button type="button" class="btn btn-outline-secondary btn-sm" onclick="replaceUploadedFiles()"><i class="fas fa-sync-alt"></i> Replace</button>';
+    html += '</div></div>';
+    fileList.innerHTML = html;
+}
+function clearUploadedFiles() {
+    const fileList = document.getElementById('uploadedFileList');
+    if (fileList) fileList.remove();
+}
+window.removeUploadedFiles = function() {
+    fileInput.value = '';
+    clearPreview();
+    clearMapping();
+    clearUploadedFiles();
+    document.getElementById('previewArea').style.display = 'none';
+    document.getElementById('parameterSection').style.display = 'none';
+};
+window.replaceUploadedFiles = function() {
+    fileInput.value = '';
+    clearPreview();
+    clearMapping();
+    clearUploadedFiles();
+    fileInput.click();
+};
+
+// Add new quick-select functions in the script
+function getSelectedDays() {
+    if (document.getElementById('optWeekdays').checked) return [1,2,3,4,5];
+    if (document.getElementById('optWeekends').checked) return [0,6];
+    if (document.getElementById('optMidweek').checked) return [2,3,4];
+    return [];
+}
     </script>
 </body>
 </html>

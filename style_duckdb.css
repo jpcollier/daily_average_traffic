@@ -323,3 +323,31 @@ td {
 .modal-body strong {
     color: #954C2E;
 }
+.section-title-flat {
+    font-size: 1.13em;
+    font-weight: 700;
+    color: #254D70;
+    border-left: 5px solid #254D70;
+    padding-left: 0.8em;
+    margin-bottom: 1.2em;
+    margin-top: 0.5em;
+    background: none;
+    display: flex;
+    align-items: center;
+}
+.section-title-flat.sub {
+    font-size: 1.05em;
+    border-left: 3px solid #254D70;
+    margin-top: 1.2em;
+}
+.csv-preview-box {
+    background: #f8faff;
+    border: 1.5px solid #254D70;
+    border-radius: 8px;
+    padding: 1em;
+    max-height: 200px;
+    overflow: auto;
+    font-family: 'Fira Mono', 'Consolas', 'Menlo', monospace;
+    font-size: 0.98em;
+    margin-bottom: 0;
+}
