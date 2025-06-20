@@ -70,7 +70,8 @@
                 </div>
                 <div class="mb-3" style="border-bottom: 1px solid #e3e3e3; padding-bottom: 0.7em;">
                     <div class="mt-2">
-                        <label class="me-3"><input type="radio" name="dayGroup" id="optWeekdays" checked> Weekdays</label>
+                        <label class="me-3"><input type="radio" name="dayGroup" id="optAllDays" checked> All Days</label>
+                        <label class="me-3"><input type="radio" name="dayGroup" id="optWeekdays"> Weekdays</label>
                         <label class="me-3"><input type="radio" name="dayGroup" id="optWeekends"> Weekends</label>
                         <label><input type="radio" name="dayGroup" id="optMidweek"> Midweek</label>
                     </div>
@@ -1249,6 +1250,7 @@ window.replaceUploadedFiles = function() {
 
 // Add new quick-select functions in the script
 function getSelectedDays() {
+    if (document.getElementById('optAllDays').checked) return [0,1,2,3,4,5,6];
     if (document.getElementById('optWeekdays').checked) return [1,2,3,4,5];
     if (document.getElementById('optWeekends').checked) return [0,6];
     if (document.getElementById('optMidweek').checked) return [2,3,4];
